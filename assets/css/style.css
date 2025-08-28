@@ -20,7 +20,7 @@ body, html {
 }
 
 /* * ================================================
- * Halaman #1: Landing Page (Wallet Connect)
+ * Halaman #1: Landing Page
  * ================================================
  */
 .page-landing {
@@ -85,67 +85,62 @@ body, html {
     box-shadow: 0 4px 15px rgba(58, 125, 255, 0.4);
 }
 
-.page-landing .connect-wallet-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(58, 125, 255, 0.6);
-}
-
-.page-landing .connect-wallet-btn .btn-icon {
-    margin-right: 0.75rem;
-}
-
 /* * ================================================
- * Halaman #2: Dashboard & Halaman Dalam Lainnya
+ * Kerangka untuk SEMUA Halaman Aplikasi
  * ================================================
  */
-.page-dashboard {
+.page-app {
     padding-bottom: 80px; 
 }
 
-.page-dashboard .header {
+.page-app .header {
     padding: 1.5rem 1rem;
 }
 
-.page-dashboard .header .greeting-wallet {
+.page-app .header .greeting-wallet {
     font-size: 1.1rem;
     font-weight: 600;
 }
 
-/* Diubah dari .notification-icon ke .disconnect-btn */
-.page-dashboard .header .disconnect-btn {
+.page-app .header .disconnect-btn {
     font-size: 1.5rem;
     color: var(--text-secondary);
     transition: color 0.3s ease;
 }
-.page-dashboard .header .disconnect-btn:hover {
+.page-app .header .disconnect-btn:hover {
     color: var(--primary-blue);
 }
 
-.page-dashboard .stat-card {
+.page-app .page-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin: 1rem 0 2rem 0;
+}
+
+/* * ================================================
+ * Komponen Umum di Halaman Aplikasi
+ * ================================================
+ */
+.page-app .stat-card {
     background-color: var(--card-background);
     border-radius: 1rem;
     padding: 1.25rem;
     border: 1px solid var(--border-color);
 }
 
-.page-dashboard .stat-card .stat-title {
+.page-app .stat-card .stat-title {
     font-size: 0.9rem;
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 
-.page-dashboard .stat-card .stat-value {
-    font-size: 1.0rem;
+.page-app .stat-card .stat-value {
+    font-size: 1.2rem;
     font-weight: 700;
 }
 
-.page-dashboard .stat-card .stat-icon {
-    font-size: 1.2rem;
-    margin-right: 0.5rem;
-    color: var(--primary-blue);
-}
-
-.page-dashboard .cta-button {
+.page-app .cta-button {
     background: linear-gradient(45deg, var(--primary-blue), #5a8fff);
     border: none;
     border-radius: 0.75rem;
@@ -157,46 +152,71 @@ body, html {
     box-shadow: 0 4px 15px rgba(58, 125, 255, 0.4);
 }
 
-.page-dashboard .section-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-}
-
-.page-dashboard .summary-card {
+.page-app .summary-card,
+.page-app .confirmation-summary {
     background-color: var(--card-background);
     border-radius: 1rem;
     padding: 1.5rem;
     border: 1px solid var(--border-color);
 }
 
-.page-dashboard .summary-item {
+.page-app .summary-item {
     border-bottom: 1px solid var(--border-color);
     padding: 1rem 0;
 }
-
-.page-dashboard .summary-item:last-child {
+.page-app .summary-item:last-child {
     border-bottom: none;
     padding-bottom: 0;
 }
-.page-dashboard .summary-item:first-child {
+.page-app .summary-item:first-child {
     padding-top: 0;
 }
 
-.page-dashboard .progress-bar-custom {
-    background-color: var(--card-background);
-    border-radius: 0.5rem;
-    height: 10px;
+/* * ================================================
+ * Gaya Khusus Form (Untuk Halaman Stake, Wallet, dll.)
+ * ================================================
+ */
+.page-app .form-group-custom {
+    margin-bottom: 1.5rem;
 }
 
-.page-dashboard .progress-bar-custom .progress-fill {
+.page-app .form-label-custom {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.page-app .form-control-custom {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 0.9rem 1rem;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 600;
+    width: 100%;
+}
+
+.page-app .plan-selection .plan-btn {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 100%;
+    text-align: left;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.page-app .plan-selection .plan-btn.active {
     background-color: var(--primary-blue);
-    border-radius: 0.5rem;
-    height: 100%;
+    border-color: var(--primary-blue);
 }
 
 /* * ================================================
- * Komponen Global: Navigasi Bawah (Untuk page-dashboard)
+ * Komponen Global: Navigasi Bawah
  * ================================================
  */
 .bottom-nav {
@@ -233,8 +253,4 @@ body, html {
 
 .nav-item.active {
     color: var(--primary-blue);
-}
-
-.nav-item:hover {
-    color: var(--text-primary);
 }
