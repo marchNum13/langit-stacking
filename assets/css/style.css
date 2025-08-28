@@ -17,14 +17,18 @@ body, html {
     font-family: 'Inter', sans-serif;
     background-color: var(--dark-background);
     color: var(--text-primary);
-    height: 100%;
+    /* height: 100% dihapus dari sini agar tidak mengganggu halaman lain */
 }
 
 /* * ================================================
  * Halaman #1: Landing Page (Wallet Connect)
- * Gaya ini hanya akan aktif jika body memiliki class="page-landing"
  * ================================================
  */
+.page-landing {
+    /* height: 100% dipindahkan ke sini agar hanya berlaku untuk landing page */
+    height: 100%; 
+}
+
 .page-landing .main-container {
     display: flex;
     justify-content: center;
@@ -94,11 +98,10 @@ body, html {
 
 /* * ================================================
  * Halaman #2: Dashboard & Halaman Dalam Lainnya
- * Gaya ini hanya akan aktif jika body memiliki class="page-dashboard"
  * ================================================
  */
 .page-dashboard {
-    padding-bottom: 90px;
+    padding-bottom: 80px; 
 }
 
 .page-dashboard .header {
