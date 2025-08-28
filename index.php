@@ -22,6 +22,11 @@
 </head>
 <body class="page-landing">
 
+    <!-- Preloader -->
+    <div class="preloader">
+        <img src="assets/images/logo-langit.png" alt="Loading..." class="loader-logo">
+    </div>
+
     <div class="main-container">
         <div class="content-card">
             <!-- Logo -->
@@ -45,6 +50,37 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const preloader = document.querySelector('.preloader');
+            const navLinks = document.querySelectorAll('.nav-item');
+
+            // Sembunyikan preloader saat halaman selesai dimuat
+            preloader.classList.remove('show');
+
+            // Tambahkan event listener ke semua link navigasi
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault(); // Mencegah perpindahan halaman instan
+                    const destination = this.href;
+
+                    // Tampilkan preloader
+                    preloader.classList.add('show');
+
+                    // Tunggu sebentar lalu pindah halaman
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 500); // 0.5 detik untuk efek transisi
+                });
+            });
+
+            // Handle back/forward browser
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted) {
+                    preloader.classList.remove('show');
+                }
+            });
+        });
+
         // Menambahkan event listener ke tombol
         const connectWalletBtn = document.getElementById('connectWalletBtn');
 
