@@ -130,13 +130,13 @@ body, html {
 }
 
 .page-app .stat-card .stat-title {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
     margin-bottom: 0.5rem;
 }
 
 .page-app .stat-card .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.0rem;
     font-weight: 700;
 }
 
@@ -229,6 +229,198 @@ body, html {
 .page-app .plan-selection .plan-btn.active {
     background-color: var(--primary-blue);
     border-color: var(--primary-blue);
+}
+
+/* * ================================================
+ * Gaya Khusus Halaman Wallet
+ * ================================================
+ */
+.page-app .balance-card {
+    background: linear-gradient(45deg, var(--primary-blue), #5a8fff);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(58, 125, 255, 0.4);
+}
+
+.page-app .balance-card .balance-label {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.page-app .balance-card .balance-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.page-app .info-box {
+    background-color: var(--card-background);
+    border-left: 4px solid var(--primary-blue);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 2rem;
+}
+
+/* * ================================================
+ * Gaya Khusus Halaman Network
+ * ================================================
+ */
+.page-app .referral-card {
+    background-color: var(--card-background);
+    border-radius: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-app .referral-card .referral-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding-right: 1rem;
+}
+
+.page-app .copy-btn {
+    background-color: var(--primary-blue);
+    color: var(--text-primary);
+    border: none;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+.page-app .downline-list .downline-item {
+    background-color: var(--card-background);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-app .downline-item .wallet-address {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.page-app .downline-item .turnover-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.page-app .downline-item .turnover-amount {
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+/* * ================================================
+ * Gaya Khusus Halaman History
+ * ================================================
+ */
+.page-app .history-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto; /* Agar bisa scroll horizontal jika tidak muat */
+}
+
+.page-app .history-tab-item {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.page-app .history-tab-item.active {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.page-app .transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-app .transaction-item:last-child {
+    border-bottom: none;
+}
+
+.page-app .transaction-icon {
+    background-color: var(--card-background);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1rem;
+    font-size: 1rem;
+}
+
+.page-app .transaction-icon.income { color: var(--success-color); }
+.page-app .transaction-icon.outcome { color: var(--danger-color); }
+.page-app .transaction-icon.stake { color: var(--primary-blue); }
+
+.page-app .transaction-details {
+    flex-grow: 1;
+}
+
+.page-app .transaction-details .type {
+    font-weight: 600;
+}
+
+.page-app .transaction-details .date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.page-app .transaction-amount {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+.page-app .transaction-amount.income { color: var(--success-color); }
+.page-app .transaction-amount.outcome { color: var(--danger-color); }
+
+.page-app .pagination-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 2rem;
+}
+
+.page-app .pagination-btn {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+}
+
+.page-app .pagination-btn:disabled {
+    opacity: 0.5;
+}
+
+.page-app .pagination-info {
+    font-size: 0.9rem;
 }
 
 /* * ================================================

@@ -61,7 +61,7 @@
 
             <!-- Tombol Aksi Utama (CTA) -->
             <section class="d-grid gap-2 mb-4">
-                <button class="btn cta-button"><i class="fas fa-rocket me-2"></i> Stake Now!</button>
+                <a href="stake.php" class="btn cta-button"><i class="fas fa-rocket me-2"></i> Stake Now!</a>
             </section>
 
             <!-- Ringkasan Pendapatan -->
@@ -110,15 +110,15 @@
             <i class="fas fa-layer-group nav-icon"></i>
             <span class="nav-label">Stake</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="network.php" class="nav-item">
             <i class="fas fa-sitemap nav-icon"></i>
             <span class="nav-label">Network</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="wallet.php" class="nav-item">
             <i class="fas fa-wallet nav-icon"></i>
             <span class="nav-label">Wallet</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="history.php" class="nav-item">
             <i class="fas fa-history nav-icon"></i>
             <span class="nav-label">History</span>
         </a>

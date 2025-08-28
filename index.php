@@ -49,7 +49,6 @@
         const connectWalletBtn = document.getElementById('connectWalletBtn');
 
         // Fungsi placeholder untuk menghubungkan wallet
-        // Logika web3/ethers.js akan diimplementasikan di sini nanti
         function connectWallet() {
             console.log('Attempting to connect wallet...');
             
@@ -57,15 +56,9 @@
             connectWalletBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Connecting...';
             connectWalletBtn.disabled = true;
 
-            // Nanti di sini akan ada logika koneksi wallet yang sebenarnya
-            // Untuk sekarang, kita hanya akan menampilkan pesan setelah 2 detik
+            // Setelah 2 detik, arahkan ke halaman home.html
             setTimeout(() => {
-                console.log('Wallet connection logic would go here.');
-                alert('Wallet connection functionality will be implemented next.');
-                
-                // Kembalikan tombol ke state semula
-                connectWalletBtn.innerHTML = '<i class="fas fa-wallet btn-icon"></i> Connect Wallet';
-                connectWalletBtn.disabled = false;
+                window.location.href = 'home.php';
             }, 2000);
         }
 
