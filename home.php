@@ -15,13 +15,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<body class="page-dashboard">
+<!-- Diubah dari page-dashboard menjadi page-app untuk konsistensi -->
+<body class="page-app">
 
     <div class="container">
         <!-- Header -->
         <header class="d-flex justify-content-between align-items-center header">
             <div class="greeting-wallet">Hello, 0x123...abcd</div>
-            <!-- Elemen yang diubah -->
             <a href="#" class="disconnect-btn">
                 <i class="fas fa-sign-out-alt"></i>
             </a>
@@ -47,7 +47,7 @@
                     <div class="col-6">
                         <div class="stat-card">
                             <div class="stat-title">Your Grade</div>
-                            <div class="stat-value"><i class="fas fa-star stat-icon"></i> Grade D</div>
+                            <div class="stat-value"><i class="fas fa-star"></i> Grade D</div>
                         </div>
                     </div>
                     <div class="col-6">
@@ -102,11 +102,11 @@
 
     <!-- Navigasi Bawah -->
     <nav class="bottom-nav">
-        <a href="#" class="nav-item active">
+        <a href="home.php" class="nav-item active">
             <i class="fas fa-home nav-icon"></i>
             <span class="nav-label">Home</span>
         </a>
-        <a href="#" class="nav-item">
+        <a href="stake.php" class="nav-item">
             <i class="fas fa-layer-group nav-icon"></i>
             <span class="nav-label">Stake</span>
         </a>

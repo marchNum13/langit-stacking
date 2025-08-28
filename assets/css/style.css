@@ -136,7 +136,7 @@ body, html {
 }
 
 .page-app .stat-card .stat-value {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
     font-weight: 700;
 }
 
@@ -171,6 +171,22 @@ body, html {
 .page-app .summary-item:first-child {
     padding-top: 0;
 }
+
+/* STYLE YANG HILANG DITAMBAHKAN KEMBALI DI SINI */
+.page-app .progress-bar-custom {
+    background-color: var(--dark-background); /* Sedikit lebih gelap dari card */
+    border-radius: 0.5rem;
+    height: 10px;
+    overflow: hidden; /* Penting agar border-radius di child-nya terlihat */
+}
+
+.page-app .progress-bar-custom .progress-fill {
+    background-color: var(--primary-blue);
+    border-radius: 0.5rem;
+    height: 100%;
+}
+/* AKHIR DARI STYLE YANG DITAMBAHKAN */
+
 
 /* * ================================================
  * Gaya Khusus Form (Untuk Halaman Stake, Wallet, dll.)
