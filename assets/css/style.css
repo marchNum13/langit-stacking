@@ -1,0 +1,95 @@
+/* * ================================================
+ * Variabel Warna Berdasarkan Logo
+ * ================================================
+ */
+:root {
+    --primary-blue: #3a7dff; /* Biru cerah dari logo */
+    --dark-background: #0d1117; /* Biru sangat gelap dari background logo */
+    --card-background: #161b22; /* Sedikit lebih terang untuk kontras */
+    --text-primary: #ffffff;   /* Putih untuk teks utama */
+    --text-secondary: #c9d1d9; /* Abu-abu terang untuk deskripsi */
+    --accent-glow: rgba(58, 125, 255, 0.3); /* Efek glow biru */
+}
+
+/* * ================================================
+ * Gaya Dasar & Layout
+ * ================================================
+ */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark-background);
+    color: var(--text-primary);
+}
+
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+.content-card {
+    background-color: var(--card-background);
+    border-radius: 1rem; /* Sudut yang lebih rounded */
+    padding: 2.5rem 2rem;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 var(--accent-glow);
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* * ================================================
+ * Gaya Elemen Spesifik
+ * ================================================
+ */
+.logo-img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1.5rem;
+    border-radius: 50%;
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.welcome-title {
+    font-weight: 700;
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.short-description {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.connect-wallet-btn {
+    background: linear-gradient(45deg, var(--primary-blue), #5a8fff);
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0.9rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    width: 100%;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(58, 125, 255, 0.4);
+}
+
+.connect-wallet-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(58, 125, 255, 0.6);
+}
+
+.connect-wallet-btn .btn-icon {
+    margin-right: 0.75rem;
+}
