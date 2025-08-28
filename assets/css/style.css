@@ -14,10 +14,10 @@
 
 body, html {
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    /* Font diubah ke Space Grotesk */
+    font-family: 'Space Grotesk', sans-serif;
     background-color: var(--dark-background);
     color: var(--text-primary);
-    /* height: 100% dihapus dari sini agar tidak mengganggu halaman lain */
 }
 
 /* * ================================================
@@ -25,7 +25,6 @@ body, html {
  * ================================================
  */
 .page-landing {
-    /* height: 100% dipindahkan ke sini agar hanya berlaku untuk landing page */
     height: 100%; 
 }
 

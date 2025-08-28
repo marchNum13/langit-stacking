@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
 
 </head>
-<body>
+<body class="page-landing">
 
     <div class="main-container">
         <div class="content-card">
