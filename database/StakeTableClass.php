@@ -234,5 +234,31 @@ class StakeTableClass extends connMySQL
         $stmt->close();
         return $stakes;
     }
+
+    /**
+     * FUNGSI BARU: Menghitung total omset dari daftar user ID.
+     */
+    public function getTotalStakesForUserList(array $userIds): float
+    {
+        if (empty($userIds)) {
+            return 0.0;
+        }
+        $conn = $this->dbConn();
+        $placeholders = implode(',', array_fill(0, count($userIds), '?'));
+        $types = str_repeat('i', count($userIds));
+
+        $sql = "SELECT SUM({$this->col_amount_usdt_initial}) as total 
+                FROM {$this->table_name} 
+                WHERE {$this->col_user_id} IN ({$placeholders})";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param($types, ...$userIds);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return (float)($row['total'] ?? 0.0);
+    }
 }
 ?>
+

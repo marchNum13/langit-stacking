@@ -150,7 +150,67 @@ class UserTableClass extends connMySQL
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $stmt->close();
-        return $row['total'] ?? 0;
+        return (int)($row['total'] ?? 0);
+    }
+
+    /**
+     * FUNGSI BARU: Mengambil semua data dari downline langsung.
+     */
+    public function getDirectDownlinesData(string $uplineWallet): array
+    {
+        $conn = $this->dbConn();
+        $sql = "SELECT {$this->col_id}, {$this->col_wallet_address} 
+                FROM {$this->table_name} 
+                WHERE {$this->col_upline_wallet} = ? 
+                ORDER BY {$this->col_id} DESC";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('s', $uplineWallet);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $downlines = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+        return $downlines;
+    }
+
+    /**
+     * FUNGSI BARU: Menggunakan query rekursif untuk mendapatkan statistik jaringan.
+     */
+    public function getNetworkStats(int $userId): array
+    {
+        $conn = $this->dbConn();
+        $sql = "
+            WITH RECURSIVE DownlineHierarchy AS (
+                -- Anchor member: Start with the direct downlines of the given user
+                SELECT id, wallet_address, upline_wallet
+                FROM users
+                WHERE upline_wallet = (SELECT wallet_address FROM users WHERE id = ?)
+
+                UNION ALL
+
+                -- Recursive member: Find downlines of the previous level
+                SELECT u.id, u.wallet_address, u.upline_wallet
+                FROM users u
+                INNER JOIN DownlineHierarchy dh ON u.upline_wallet = dh.wallet_address
+            )
+            SELECT id FROM DownlineHierarchy;
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = $result->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        $allMemberIds = [];
+        foreach ($rows as $row) {
+            $allMemberIds[] = $row['id'];
+        }
+
+        return [
+            'total_members' => count($allMemberIds),
+            'all_member_ids' => $allMemberIds
+        ];
     }
 }
 ?>
