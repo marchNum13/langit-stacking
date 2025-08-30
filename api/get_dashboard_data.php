@@ -44,7 +44,7 @@ try {
         $balances = $balanceTable->getUserBalance($userId);
     }
     
-    // 3. Hitung Total Staking Aktif (MENGGUNAKAN FUNGSI BARU YANG BENAR)
+    // 3. Hitung Total Staking Aktif
     $totalActiveStake = $stakeTable->getUserTotalStakesUSDTByStatus($userId, 'active');
 
     // 4. Hitung Total Pendapatan (dari tabel balances)
@@ -54,9 +54,9 @@ try {
     // NOTE: Logika ini akan kita implementasikan secara detail nanti
     $networkTurnover = 0.00; // Placeholder
 
-    // 6. Hitung Siklus Profit Staking (MENGGUNAKAN FUNGSI BARU YANG BENAR)
+    // 6. Hitung Siklus Profit Staking
     $totalWithdrawn = $stakeTable->getUserTotalWithdrawnUSDT($userId);
-    $totalStakeValue = $stakeTable->getUserTotalStakesUSDT($userId); // Nilai ini sudah mencakup semua stake (aktif & non-aktif)
+    $totalStakeValue = $stakeTable->getUserTotalStakesUSDT($userId);
 
     $profitCycleMax = $totalStakeValue > 0 ? $totalStakeValue * 5 : 0;
     $profitCyclePercentage = $profitCycleMax > 0 ? ($totalWithdrawn / $profitCycleMax) * 100 : 0;

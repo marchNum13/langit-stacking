@@ -17,19 +17,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
-<!-- Diubah dari page-dashboard menjadi page-app untuk konsistensi -->
 <body class="page-app">
 
     <!-- Preloader -->
-    <div class="preloader">
+    <div class="preloader show"> <!-- Tampilkan secara default, JS akan menyembunyikan -->
         <img src="assets/images/logo-langit.png" alt="Loading..." class="loader-logo">
     </div>
 
     <div class="container">
         <!-- Header -->
         <header class="d-flex justify-content-between align-items-center header">
-            <div class="greeting-wallet">Hello, 0x123...abcd</div>
-            <a href="#" class="disconnect-btn">
+            <!-- PENAMBAHAN ID -->
+            <div id="greetingWallet" class="greeting-wallet">Loading...</div>
+            <a href="#" id="disconnectBtn" class="disconnect-btn">
                 <i class="fas fa-sign-out-alt"></i>
             </a>
         </header>
@@ -42,25 +42,29 @@
                     <div class="col-6">
                         <div class="stat-card">
                             <div class="stat-title">Total Active Stake</div>
-                            <div class="stat-value">$ 1,500.00</div>
+                            <!-- PENAMBAHAN ID -->
+                            <div id="totalActiveStake" class="stat-value">$ 0.00</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-card">
                             <div class="stat-title">Total Earnings</div>
-                            <div class="stat-value">$ 750.50</div>
+                            <!-- PENAMBAHAN ID -->
+                            <div id="totalEarnings" class="stat-value">$ 0.00</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-card">
                             <div class="stat-title">Your Grade</div>
-                            <div class="stat-value"><i class="fas fa-star"></i> Grade D</div>
+                            <!-- PENAMBAHAN ID -->
+                            <div id="userGrade" class="stat-value"><i class="fas fa-star"></i> Grade N/A</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-card">
                             <div class="stat-title">Network Turnover</div>
-                            <div class="stat-value">$ 1,650.00</div>
+                            <!-- PENAMBAHAN ID -->
+                            <div id="networkTurnover" class="stat-value">$ 0.00</div>
                         </div>
                     </div>
                 </div>
@@ -77,15 +81,18 @@
                     <h2 class="section-title">Your Earnings Breakdown</h2>
                     <div class="summary-item d-flex justify-content-between align-items-center">
                         <span class="item-label">Staking ROI</span>
-                        <span class="item-value">$ 450.00</span>
+                        <!-- PENAMBAHAN ID -->
+                        <span id="stakingRoi" class="item-value">$ 0.00</span>
                     </div>
                     <div class="summary-item d-flex justify-content-between align-items-center">
                         <span class="item-label">Matching Bonus</span>
-                        <span class="item-value">$ 300.50</span>
+                        <!-- PENAMBAHAN ID -->
+                        <span id="matchingBonus" class="item-value">$ 0.00</span>
                     </div>
                     <div class="summary-item d-flex justify-content-between align-items-center">
                         <span class="item-label">Royalty Bonus</span>
-                        <span class="item-value">$ 0.00</span>
+                        <!-- PENAMBAHAN ID -->
+                        <span id="royaltyBonus" class="item-value">$ 0.00</span>
                     </div>
                 </div>
             </section>
@@ -95,89 +102,30 @@
                 <div class="summary-card">
                     <h2 class="section-title">Staking Profit Cycle</h2>
                     <div class="d-flex justify-content-between align-items-center mb-2 text-secondary small">
-                        <span>Achieved: $750.50</span>
-                        <span>Max: $7,500.00 (500%)</span>
+                        <!-- PENAMBAHAN ID -->
+                        <span id="profitCycleAchieved">Achieved: $0.00</span>
+                        <span id="profitCycleMax">Max: $0.00 (500%)</span>
                     </div>
                     <div class="progress-bar-custom">
-                        <div class="progress-fill" style="width: 10%;"></div>
+                        <!-- PENAMBAHAN ID -->
+                        <div id="profitCycleProgress" class="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
             </section>
-
-            <!-- Bagian Baru: Klaim Vesting -->
-            <section class="mb-4">
-                <div class="summary-card vesting-card">
-                    <h2 class="section-title">Vesting Claims</h2>
-                    <div class="summary-item d-flex justify-content-between align-items-center">
-                        <span class="item-label">Total Unstaked</span>
-                        <span class="item-value">300.00 LANGIT</span>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button class="btn cta-button claim-button">Claim Vested Tokens</button>
-                    </div>
-                </div>
-            </section>
-
         </main>
     </div>
 
-    <!-- Navigasi Bawah -->
-    <nav class="bottom-nav">
-        <a href="home.php" class="nav-item active">
-            <i class="fas fa-home nav-icon"></i>
-            <span class="nav-label">Home</span>
-        </a>
-        <a href="stake.php" class="nav-item">
-            <i class="fas fa-layer-group nav-icon"></i>
-            <span class="nav-label">Stake</span>
-        </a>
-        <a href="network.php" class="nav-item">
-            <i class="fas fa-sitemap nav-icon"></i>
-            <span class="nav-label">Network</span>
-        </a>
-        <a href="wallet.php" class="nav-item">
-            <i class="fas fa-wallet nav-icon"></i>
-            <span class="nav-label">Wallet</span>
-        </a>
-        <a href="history.php" class="nav-item">
-            <i class="fas fa-history nav-icon"></i>
-            <span class="nav-label">History</span>
-        </a>
-    </nav>
+    <!-- Panggil nav.php -->
+    <?php include "nav.php"; ?>
 
+    <!-- JS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const preloader = document.querySelector('.preloader');
-            const navLinks = document.querySelectorAll('.nav-item');
+    <!-- Panggil file JS kustom kita -->
+    <script src="assets/js/nav_handler.js"></script>
+    <script src="assets/js/dashboard.js"></script>
 
-            // Sembunyikan preloader saat halaman selesai dimuat
-            preloader.classList.remove('show');
-
-            // Tambahkan event listener ke semua link navigasi
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault(); // Mencegah perpindahan halaman instan
-                    const destination = this.href;
-
-                    // Tampilkan preloader
-                    preloader.classList.add('show');
-
-                    // Tunggu sebentar lalu pindah halaman
-                    setTimeout(() => {
-                        window.location.href = destination;
-                    }, 500); // 0.5 detik untuk efek transisi
-                });
-            });
-
-            // Handle back/forward browser
-            window.addEventListener('pageshow', function(event) {
-                if (event.persisted) {
-                    preloader.classList.remove('show');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
+

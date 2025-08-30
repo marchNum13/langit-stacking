@@ -172,6 +172,48 @@ class StakeTableClass extends connMySQL
         $stmt->close();
         return (float)($row['total'] ?? 0.0);
     }
+    
+    /**
+     * FUNGSI BARU: Menghitung total nilai USDT dari staking dengan status tertentu.
+     *
+     * @param int $userId ID pengguna.
+     * @param string $status Status yang dicari (misal: 'active').
+     * @return float Total nilai staking dalam USDT.
+     */
+    public function getUserTotalStakesUSDTByStatus(int $userId, string $status): float
+    {
+        $conn = $this->dbConn();
+        $sql = "SELECT SUM({$this->col_amount_usdt_initial}) as total 
+                FROM {$this->table_name} 
+                WHERE {$this->col_user_id} = ? AND {$this->col_status} = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('is', $userId, $status);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return (float)($row['total'] ?? 0.0);
+    }
+    
+    /**
+     * FUNGSI BARU: Menghitung total USDT yang sudah ditarik oleh seorang pengguna.
+     *
+     * @param int $userId ID pengguna.
+     * @return float Total USDT yang sudah ditarik.
+     */
+    public function getUserTotalWithdrawnUSDT(int $userId): float
+    {
+        $conn = $this->dbConn();
+        $sql = "SELECT SUM({$this->col_total_withdrawn_usdt}) as total FROM {$this->table_name} WHERE {$this->col_user_id} = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
+        return (float)($row['total'] ?? 0.0);
+    }
+
 
     /**
      * Mengambil semua data staking seorang pengguna dengan status tertentu.
