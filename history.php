@@ -23,7 +23,7 @@
     <div class="container">
         <!-- Header (Akan diisi oleh JS nanti) -->
         <header class="d-flex justify-content-between align-items-center header">
-            <div class="greeting-wallet">Loading...</div>
+            <div id="greetingWallet" class="greeting-wallet">Loading...</div>
             <a href="#" class="disconnect-btn"><i class="fas fa-sign-out-alt"></i></a>
         </header>
 
@@ -60,8 +60,8 @@
 
     <!-- Panggil file JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/nav_handler.js"></script>
     <script src="assets/js/history.js"></script>
+    <script src="assets/js/nav_handler.js"></script>
 
 </body>
 </html>

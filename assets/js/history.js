@@ -5,10 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const prevPageBtn = document.getElementById('prevPageBtn');
     const nextPageBtn = document.getElementById('nextPageBtn');
     const filterTabs = document.querySelectorAll('.history-tab-item');
+    // PENAMBAHAN: Ambil elemen header
+    const greetingWalletEl = document.getElementById('greetingWallet');
 
     let currentPage = 1;
     let totalPages = 1;
     let currentFilter = 'all';
+
+    // Fungsi untuk memformat alamat wallet
+    const formatWalletAddress = (address) => {
+        if (!address) return 'Loading...';
+        return `${address.substring(0, 5)}...${address.substring(address.length - 4)}`;
+    };
 
     // Fungsi untuk memformat tanggal (mengubah UTC ke zona waktu lokal)
     const formatLocalDate = (utcDateString) => {
@@ -63,6 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.status === 'success') {
+                // PENAMBAHAN: Update header dengan wallet address dari respons
+                greetingWalletEl.textContent = `Hello, ${formatWalletAddress(result.wallet_address)}`;
+
                 if(result.data.length > 0) {
                     result.data.forEach(tx => {
                         transactionListContainer.innerHTML += createTransactionItemHTML(tx);
@@ -124,3 +135,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Panggil untuk memuat data awal
     fetchHistory();
 });
+

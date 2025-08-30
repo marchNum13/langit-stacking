@@ -36,9 +36,8 @@ if (!in_array($type, $allowedTypes)) {
 // Menyesuaikan filter 'bonus' untuk query SQL
 $actualTypeForQuery = $type;
 if ($type === 'bonus') {
-    // Ini akan digunakan untuk query IN() di dalam kelas, tapi untuk sekarang kita sederhanakan
-    // Untuk contoh ini, kita akan buat logikanya langsung di sini.
-    // Di implementasi nyata, ini bisa dibuat lebih canggih di dalam TransactionTableClass.
+    // Di implementasi nyata, ini bisa dibuat lebih canggih di dalam TransactionTableClass
+    // dengan query IN ('matching_bonus_in', 'staking_roi_in', 'royalty_bonus_in')
 }
 
 
@@ -63,6 +62,8 @@ try {
     // Menyiapkan data untuk dikirim
     $response = [
         'status' => 'success',
+        // PENAMBAHAN: Sertakan wallet_address di respons
+        'wallet_address' => $walletAddress,
         'data' => $transactions,
         'pagination' => [
             'current_page' => $page,
