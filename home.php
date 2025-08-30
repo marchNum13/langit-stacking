@@ -104,6 +104,20 @@
                 </div>
             </section>
 
+            <!-- Bagian Baru: Klaim Vesting -->
+            <section class="mb-4">
+                <div class="summary-card vesting-card">
+                    <h2 class="section-title">Vesting Claims</h2>
+                    <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Total Unstaked</span>
+                        <span class="item-value">300.00 LANGIT</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn cta-button claim-button">Claim Vested Tokens</button>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
 

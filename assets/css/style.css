@@ -464,6 +464,26 @@ body, html {
 }
 
 /* * ================================================
+ * Gaya Khusus Kartu Vesting
+ * ================================================
+ */
+.vesting-card {
+    border-left: 4px solid var(--primary-blue);
+}
+
+.vesting-card .claim-button {
+    margin-top: 1.5rem;
+    background-color: var(--card-background);
+    border: 1px solid var(--primary-blue);
+    color: var(--text-primary);
+}
+
+.vesting-card .claim-button:hover {
+    background-color: var(--primary-blue);
+    color: var(--text-primary);
+}
+
+/* * ================================================
  * Komponen Global: Navigasi Bawah
  * ================================================
  */
