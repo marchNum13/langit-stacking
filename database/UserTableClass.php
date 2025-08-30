@@ -61,21 +61,43 @@ class UserTableClass extends connMySQL
         
         return $user;
     }
+    
+    /**
+     * REVISI: Mencari pengguna berdasarkan ID mereka.
+     *
+     * @param int $userId ID pengguna.
+     * @return array|false Data pengguna, atau false jika tidak ditemukan.
+     */
+    public function getUserById(int $userId)
+    {
+        $conn = $this->dbConn();
+        $sql = "SELECT * FROM {$this->table_name} WHERE {$this->col_id} = ?";
+        
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param('i', $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        $stmt->close();
+        
+        return $user;
+    }
+
 
     /**
-     * Mencari pengguna berdasarkan alamat wallet, atau membuat yang baru jika tidak ditemukan.
-     * Ini adalah fungsi utama untuk login/registrasi pengguna.
+     * REVISI: Logika findOrCreateUser diperbaiki.
+     * Sekarang mengembalikan data lengkap pengguna baru dan flag 'is_new'.
      *
      * @param string $walletAddress Alamat wallet pengguna.
      * @param string|null $uplineWallet Alamat wallet referrer, jika ada.
-     * @return array Data pengguna (baik yang sudah ada atau yang baru dibuat).
+     * @return array Berisi data pengguna dan flag 'is_new'
      */
     public function findOrCreateUser(string $walletAddress, ?string $uplineWallet = null): array
     {
         $existingUser = $this->getUserByWalletAddress($walletAddress);
 
         if ($existingUser) {
-            return $existingUser;
+            return ['user' => $existingUser, 'is_new' => false];
         }
 
         // Pengguna tidak ada, buat yang baru
@@ -87,15 +109,11 @@ class UserTableClass extends connMySQL
         $stmt->execute();
         $newUserId = $stmt->insert_id;
         $stmt->close();
+        
+        // Ambil kembali data pengguna yang baru dibuat untuk memastikan konsistensi data
+        $newUser = $this->getUserById($newUserId);
 
-        // Mengembalikan data pengguna yang baru dibuat
-        return [
-            $this->col_id => $newUserId,
-            $this->col_wallet_address => $walletAddress,
-            $this->col_upline_wallet => $uplineWallet,
-            $this->col_grade => null,
-            // created_at akan diatur secara default di MySQL
-        ];
+        return ['user' => $newUser, 'is_new' => true];
     }
     
     /**

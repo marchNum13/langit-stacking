@@ -68,24 +68,23 @@ try {
     
     // Cari atau buat pengguna baru
     $result = $userTable->findOrCreateUser($walletAddress, $uplineAddress);
-
-    // Variabel untuk menandai jika ini adalah user baru
-    $isNewUser = !isset($result['created_at']);
+    $userData = $result['user'];
+    $isNewUser = $result['is_new'];
 
     // Jika pengguna baru berhasil dibuat
     if ($isNewUser) {
-        $newUserId = $result['id']; // REVISI: Mengambil ID langsung dari array
+        $newUserId = $userData['id'];
 
         // Buat entri balance untuk pengguna baru
         $balanceTable = new BalanceTableClass();
         $balanceTable->createBalanceEntry($newUserId);
 
         // Kirim respons dengan data pengguna baru
-        echo json_encode(['status' => 'success', 'message' => 'User registered successfully.', 'data' => $result]);
+        echo json_encode(['status' => 'success', 'message' => 'User registered successfully.', 'data' => $userData]);
 
     } else {
         // Jika pengguna sudah ada, kirim data pengguna yang ada
-        echo json_encode(['status' => 'success', 'message' => 'User logged in successfully.', 'data' => $result]);
+        echo json_encode(['status' => 'success', 'message' => 'User logged in successfully.', 'data' => $userData]);
     }
 
 } catch (Exception $e) {
