@@ -30,6 +30,18 @@
         <h1 class="page-title">My Network</h1>
 
         <main>
+            <!-- PENAMBAHAN: Journey to Grade -->
+            <section class="summary-card mb-4">
+                <h2 id="journeyTitle" class="section-title">Loading Journey...</h2>
+                <div class="d-flex justify-content-between align-items-center mb-2 text-secondary small">
+                    <span id="journeyCurrent">Turnover: $0.00</span>
+                    <span id="journeyTarget">Target: $0.00</span>
+                </div>
+                <div class="progress-bar-custom">
+                    <div id="journeyProgress" class="progress-fill" style="width: 0%;"></div>
+                </div>
+            </section>
+
             <!-- Network Stat Cards -->
             <section class="mb-4">
                 <div class="row g-3">
@@ -74,3 +86,4 @@
 
 </body>
 </html>
+

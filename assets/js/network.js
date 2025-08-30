@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="turnover-label">Total Turnover</div>
                 </div>
                 <div class="text-end">
-                    <div class="turnover-amount">$ ${parseFloat(downline.turnover).toFixed(2)}</div>
+                    <div class="turnover-amount">$ ${downline.turnover}</div>
                 </div>
             </div>
         `;
@@ -27,6 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update header
         document.getElementById('greetingWallet').textContent = `Hello, ${formatWalletAddress(data.wallet_address)}`;
         
+        // PENAMBAHAN: Update Journey to Grade
+        const journey = data.grade_journey;
+        document.getElementById('journeyTitle').textContent = `Journey to Grade ${journey.next_grade}`;
+        document.getElementById('journeyCurrent').textContent = `Turnover: $${parseFloat(journey.current_turnover).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        document.getElementById('journeyTarget').textContent = `Target: $${parseFloat(journey.target_turnover).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        
+        let percentage = 0;
+        if (journey.target_turnover > 0) {
+            percentage = (journey.current_turnover / journey.target_turnover) * 100;
+        }
+        document.getElementById('journeyProgress').style.width = `${Math.min(percentage, 100)}%`;
+
+
         // Update statistik
         document.getElementById('directDownlinesCount').textContent = data.direct_downline_count;
         document.getElementById('totalTeamMembers').textContent = data.total_team_members;
@@ -84,3 +97,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Panggil fungsi untuk mengambil data
     fetchNetworkData();
 });
+
