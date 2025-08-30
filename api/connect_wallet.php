@@ -1,4 +1,7 @@
 <?php
+// PENAMBAHAN: Mulai session di awal skrip
+session_start();
+
 // Mengatur header untuk memastikan output adalah JSON
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // Izinkan akses dari mana saja (untuk pengembangan)
@@ -70,6 +73,9 @@ try {
     $result = $userTable->findOrCreateUser($walletAddress, $uplineAddress);
     $userData = $result['user'];
     $isNewUser = $result['is_new'];
+
+    // PENAMBAHAN: Simpan wallet address ke dalam session setelah berhasil
+    $_SESSION['wallet_address'] = $walletAddress;
 
     // Jika pengguna baru berhasil dibuat
     if ($isNewUser) {
