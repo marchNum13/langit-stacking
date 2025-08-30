@@ -22,9 +22,9 @@ if (!isset($_SESSION['wallet_address'])) {
 $walletAddress = $_SESSION['wallet_address'];
 
 // Mengambil parameter dari query string (GET request)
-$type = $_GET['type'] ?? 'all';       // Filter berdasarkan tipe transaksi
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Halaman saat ini
-$limit = 10; // Jumlah transaksi per halaman
+$type = $_GET['type'] ?? 'all';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 10;
 $offset = ($page - 1) * $limit;
 
 // Validasi tipe filter untuk keamanan
@@ -32,14 +32,6 @@ $allowedTypes = ['all', 'stake', 'withdraw', 'claim_vesting', 'bonus'];
 if (!in_array($type, $allowedTypes)) {
     $type = 'all'; // Default ke 'all' jika tipe tidak valid
 }
-
-// Menyesuaikan filter 'bonus' untuk query SQL
-$actualTypeForQuery = $type;
-if ($type === 'bonus') {
-    // Di implementasi nyata, ini bisa dibuat lebih canggih di dalam TransactionTableClass
-    // dengan query IN ('matching_bonus_in', 'staking_roi_in', 'royalty_bonus_in')
-}
-
 
 try {
     $userTable = new UserTableClass();
@@ -52,17 +44,16 @@ try {
     }
     $userId = $user['id'];
     
-    // Mengambil transaksi dengan paginasi dan filter
-    $transactions = $transactionTable->getUserTransactions($userId, $actualTypeForQuery, $limit, $offset);
+    // REVISI: Cukup teruskan parameter '$type' langsung ke dalam fungsi.
+    // Logika filter 'bonus' sekarang ditangani di dalam TransactionTableClass.
+    $transactions = $transactionTable->getUserTransactions($userId, $type, $limit, $offset);
+    $totalTransactions = $transactionTable->countUserTransactions($userId, $type);
     
-    // Menghitung total transaksi untuk paginasi
-    $totalTransactions = $transactionTable->countUserTransactions($userId, $actualTypeForQuery);
     $totalPages = ceil($totalTransactions / $limit);
     
     // Menyiapkan data untuk dikirim
     $response = [
         'status' => 'success',
-        // PENAMBAHAN: Sertakan wallet_address di respons
         'wallet_address' => $walletAddress,
         'data' => $transactions,
         'pagination' => [
@@ -79,3 +70,4 @@ try {
     send_error('An internal server error occurred.');
 }
 ?>
+

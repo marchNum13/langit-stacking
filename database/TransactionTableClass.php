@@ -93,14 +93,8 @@ class TransactionTableClass extends connMySQL
     }
 
     /**
+     * REVISI: Logika filter bonus diimplementasikan di sini.
      * Mengambil daftar transaksi seorang pengguna dengan filter dan paginasi.
-     * (Tidak perlu diubah karena menggunakan SELECT *)
-     *
-     * @param int $userId ID pengguna.
-     * @param string|null $type Tipe transaksi untuk difilter (opsional).
-     * @param int $limit Jumlah data per halaman.
-     * @param int $offset Jumlah data yang dilewati (untuk paginasi).
-     * @return array Daftar transaksi.
      */
     public function getUserTransactions(int $userId, ?string $type = null, int $limit = 20, int $offset = 0): array
     {
@@ -113,9 +107,17 @@ class TransactionTableClass extends connMySQL
         $types .= 'i';
 
         if ($type !== null && $type !== 'all') {
-            $sql .= " AND {$this->col_type} = ?";
-            $params[] = $type;
-            $types .= 's';
+            if ($type === 'bonus') {
+                $sql .= " AND {$this->col_type} IN (?, ?, ?)";
+                $params[] = 'staking_roi_in';
+                $params[] = 'matching_bonus_in';
+                $params[] = 'royalty_bonus_in';
+                $types .= 'sss';
+            } else {
+                $sql .= " AND {$this->col_type} = ?";
+                $params[] = $type;
+                $types .= 's';
+            }
         }
 
         $sql .= " ORDER BY {$this->col_created_at} DESC LIMIT ? OFFSET ?";
@@ -134,12 +136,8 @@ class TransactionTableClass extends connMySQL
     }
 
     /**
+     * REVISI: Logika filter bonus diimplementasikan di sini.
      * Menghitung total jumlah transaksi untuk paginasi.
-     * (Tidak perlu diubah)
-     *
-     * @param int $userId ID pengguna.
-     * @param string|null $type Tipe transaksi untuk difilter (opsional).
-     * @return int Total jumlah transaksi.
      */
     public function countUserTransactions(int $userId, ?string $type = null): int
     {
@@ -152,9 +150,17 @@ class TransactionTableClass extends connMySQL
         $types .= 'i';
 
         if ($type !== null && $type !== 'all') {
-            $sql .= " AND {$this->col_type} = ?";
-            $params[] = $type;
-            $types .= 's';
+            if ($type === 'bonus') {
+                $sql .= " AND {$this->col_type} IN (?, ?, ?)";
+                $params[] = 'staking_roi_in';
+                $params[] = 'matching_bonus_in';
+                $params[] = 'royalty_bonus_in';
+                $types .= 'sss';
+            } else {
+                $sql .= " AND {$this->col_type} = ?";
+                $params[] = $type;
+                $types .= 's';
+            }
         }
         
         $stmt = $conn->prepare($sql);
