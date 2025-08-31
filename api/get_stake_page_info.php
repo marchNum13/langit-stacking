@@ -58,6 +58,7 @@ try {
         }
 
         $response_data['active_stake_details'] = [
+            'stake_id_onchain' => $stakeDetails['stake_id_onchain'],
             'plan' => ucwords(str_replace('_', ' ', $stakeDetails['plan'])),
             'amount_langit' => number_format((float)$stakeDetails['amount_langit'], 2, '.', ','),
             'amount_usdt_initial' => number_format((float)$stakeDetails['amount_usdt_initial'], 2, '.', ','),

@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let selectedPlan = 'flexible';
     let contracts = {};
     let blockchainConfig = {};
-    let activeStakeData = null; // Menyimpan data stake aktif
+    let activeStakeData = null;
 
     // --- Sistem Notifikasi Kustom ---
     const alertOverlay = document.getElementById('customAlert');
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 greetingWalletEl.textContent = `Hello, ${formatWalletAddress(userAddress)}`;
                 
                 if (data.has_active_stake) {
-                    activeStakeData = data.active_stake_details; // Simpan data stake
+                    activeStakeData = data.active_stake_details;
                     displayManageStakeView(activeStakeData);
                 } else {
                     await initializeNewStakeView();
@@ -118,9 +118,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         manageStakeView.classList.add('d-none');
 
         langitPriceEl.textContent = `1 LANGIT ≈ $${langitPrice.toFixed(6)} USDT`;
-
-        if (!provider) provider = new ethers.providers.Web3Provider(window.ethereum);
-        if (!signer) signer = provider.getSigner();
         
         if (!blockchainConfig.langitToken) {
              console.error("Blockchain config not loaded correctly.");
@@ -177,7 +174,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Proses Staking & Unstaking ---
 
     const handleStake = async () => {
-        // ... (fungsi handleStake tetap sama seperti sebelumnya) ...
         stakeBtn.disabled = true;
         stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
         
@@ -244,18 +240,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // --- FUNGSI BARU: Handle Unstake ---
     const handleUnstake = async () => {
         unstakeBtn.disabled = true;
         unstakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
 
         try {
-            // Backend sudah memvalidasi, tapi kita bisa validasi lagi di frontend
             if (!activeStakeData) throw new Error("No active stake data found.");
 
-            // Dapatkan stakeId dari backend. Ini adalah kunci.
-            // Untuk sekarang, kita asumsikan activeStakeData akan berisi stake_id_onchain
-            // Kita perlu memodifikasi get_stake_page_info.php untuk ini
             const stakeIdOnchain = activeStakeData.stake_id_onchain; 
             if(!stakeIdOnchain) throw new Error("Stake ID is missing.");
 
@@ -263,12 +254,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 contracts.staking = new ethers.Contract(blockchainConfig.langitStaking.address, blockchainConfig.langitStaking.abi, signer);
             }
 
-            unstakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Unstaking...';
-            // Panggil fungsi `unstake` di smart contract
             const unstakeTx = await contracts.staking.unstake(stakeIdOnchain);
             const receipt = await unstakeTx.wait();
 
-            // Kirim data ke backend untuk update status
             await syncUnstakeToBackend(stakeIdOnchain, receipt.transactionHash);
 
             showCustomAlert("Unstake Initiated", "Your stake is now in the vesting period. You can start claiming your tokens from the Home page.");
@@ -315,12 +303,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
     stakeBtn.addEventListener('click', handleStake);
-    // Tambahkan event listener untuk tombol unstake
     unstakeBtn.addEventListener('click', handleUnstake);
 
 
     // --- Inisialisasi ---
-    await loadConfig();
-    await fetchPageInfo();
+    const initializeApp = async () => {
+        await loadConfig();
+        
+        // REVISI: Inisialisasi provider dan signer di sini agar selalu tersedia
+        if (typeof window.ethereum !== 'undefined') {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            signer = provider.getSigner();
+        } else {
+            showCustomAlert("MetaMask Not Found", "Please install the MetaMask browser extension to use this DApp.", "error");
+            preloader.classList.remove('show');
+            return;
+        }
+
+        await fetchPageInfo();
+    };
+
+    initializeApp();
 });
 
