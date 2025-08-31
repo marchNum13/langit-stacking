@@ -49,8 +49,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Fungsi untuk memuat konfigurasi blockchain
     const loadConfig = async () => {
-        const response = await fetch('blockchain_config.json');
-        blockchainConfig = await response.json();
+        try {
+            const response = await fetch('blockchain_config.json');
+            if (!response.ok) {
+                throw new Error("blockchain_config.json not found");
+            }
+            blockchainConfig = await response.json();
+        } catch (error) {
+            console.error(error);
+            showToast("Failed to load blockchain configuration.", true);
+        }
     };
 
     // --- Logika Utama ---
@@ -92,6 +100,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (!provider) provider = new ethers.providers.Web3Provider(window.ethereum);
         if (!signer) signer = provider.getSigner();
+        
+        // Pastikan config sudah dimuat
+        if (!blockchainConfig.LANGIT) {
+             console.error("Blockchain config not loaded correctly.");
+             return;
+        }
 
         contracts.langit = new ethers.Contract(blockchainConfig.LANGIT.address, blockchainConfig.LANGIT.abi, signer);
         
@@ -159,8 +173,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             const amountInWei = ethers.utils.parseUnits(amount, 18);
 
-            if (!contracts.staking) {
-                contracts.staking = new ethers.Contract(blockchainConfig.LangitStaking.address, blockchainConfig.LangitStaking.abi, signer);
+            if (!contracts.LangitStaking) {
+                contracts.LangitStaking = new ethers.Contract(blockchainConfig.langitStaking.address, blockchainConfig.langitStaking.abi, signer);
             }
             if (!contracts.langit) {
                  contracts.langit = new ethers.Contract(blockchainConfig.LANGIT.address, blockchainConfig.LANGIT.abi, signer);
@@ -168,7 +182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // 1. Approve
             stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Approval...';
-            const approveTx = await contracts.langit.approve(contracts.staking.address, amountInWei);
+            const approveTx = await contracts.langit.approve(contracts.LangitStaking.address, amountInWei);
             await approveTx.wait();
 
             // 2. Generate Stake ID
@@ -176,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // 3. Stake
             stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Staking...';
-            const stakeTx = await contracts.staking.stake(stakeId, amountInWei);
+            const stakeTx = await contracts.LangitStaking.stake(stakeId, amountInWei);
             const receipt = await stakeTx.wait();
 
             // 4. Sync to Backend
