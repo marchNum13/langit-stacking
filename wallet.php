@@ -8,121 +8,79 @@
     <?php include "seo.php" ?>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts (Space Grotesk) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="page-app">
 
-    <!-- Preloader -->
-    <div class="preloader">
+    <div class="preloader show">
         <img src="assets/images/logo-langit.png" alt="Loading..." class="loader-logo">
     </div>
 
     <div class="container">
         <!-- Header -->
         <header class="d-flex justify-content-between align-items-center header">
-            <div class="greeting-wallet">Hello, 0x123...abcd</div>
-            <a href="#" class="disconnect-btn">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
+            <div id="greetingWallet" class="greeting-wallet">Loading...</div>
+            <a href="#" class="disconnect-btn"><i class="fas fa-sign-out-alt"></i></a>
         </header>
 
-        <!-- Judul Halaman -->
         <h1 class="page-title">Bonus Wallet</h1>
 
-        <!-- Main Content -->
         <main>
-            <!-- Kartu Saldo Utama -->
             <section class="balance-card">
                 <div class="balance-label">Withdrawable Balance</div>
-                <div class="balance-amount">$ 350.75</div>
+                <div id="balanceAmount" class="balance-amount">$ 0.00</div>
             </section>
 
+            <!-- Pesan jika belum bisa withdraw -->
+            <section id="noWithdrawMessage" class="info-box d-none">
+                You must reach at least Grade A to be eligible for withdrawals.
+            </section>
+            
             <!-- Form Penarikan -->
-            <section class="form-group-custom">
-                <label for="withdrawAmount" class="form-label-custom">Withdrawal Amount (USDT)</label>
-                <input type="number" class="form-control form-control-custom" id="withdrawAmount" placeholder="0.00">
-                <div class="d-flex justify-content-between input-info">
-                    <span>Min withdrawal: $5.00</span>
-                    <span>You will receive ≈ 28,423 LANGIT</span>
-                </div>
-            </section>
+            <div id="withdrawForm">
+                <section class="form-group-custom">
+                    <label for="withdrawAmount" class="form-label-custom">Withdrawal Amount (USDT)</label>
+                    <input type="number" class="form-control form-control-custom" id="withdrawAmount" placeholder="0.00">
+                    <div class="d-flex justify-content-between input-info">
+                        <span>Min withdrawal: $5.00</span>
+                        <span id="equivalentLangit">You will receive ≈ 0.00 LANGIT</span>
+                    </div>
+                </section>
 
-            <!-- Tombol Aksi -->
-            <section class="d-grid gap-2">
-                <button class="btn cta-button">Withdraw Funds</button>
-            </section>
+                <section class="d-grid gap-2">
+                    <button id="withdrawBtn" class="btn cta-button" disabled>Withdraw Funds</button>
+                </section>
 
-            <!-- Informasi Penting -->
-            <section class="info-box">
-                Withdrawals will count towards your 500% profit cycle limit. You will receive the equivalent amount in LANGIT tokens based on the current market price.
-            </section>
+                <section class="info-box">
+                    Withdrawals will count towards your 500% profit cycle limit. You will receive the equivalent amount in LANGIT tokens based on the current market price.
+                </section>
+            </div>
         </main>
     </div>
+    
+    <!-- Pop-up Notifikasi -->
+    <div id="customAlert" class="custom-alert-overlay">
+        <div class="custom-alert-popup">
+            <div id="alertIcon" class="alert-icon"></div>
+            <h3 id="alertTitle" class="alert-title"></h3>
+            <p id="alertMessage" class="alert-message"></p>
+            <button id="alertCloseBtn" class="btn alert-close-btn">Close</button>
+        </div>
+    </div>
 
-    <!-- Navigasi Bawah -->
-    <nav class="bottom-nav">
-        <a href="home.php" class="nav-item">
-            <i class="fas fa-home nav-icon"></i>
-            <span class="nav-label">Home</span>
-        </a>
-        <a href="stake.php" class="nav-item">
-            <i class="fas fa-layer-group nav-icon"></i>
-            <span class="nav-label">Stake</span>
-        </a>
-        <a href="network.php" class="nav-item">
-            <i class="fas fa-sitemap nav-icon"></i>
-            <span class="nav-label">Network</span>
-        </a>
-        <a href="wallet.php" class="nav-item active">
-            <i class="fas fa-wallet nav-icon"></i>
-            <span class="nav-label">Wallet</span>
-        </a>
-        <a href="history.php" class="nav-item">
-            <i class="fas fa-history nav-icon"></i>
-            <span class="nav-label">History</span>
-        </a>
-    </nav>
+    <?php include "nav.php"; ?>
 
+    <!-- JS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const preloader = document.querySelector('.preloader');
-            const navLinks = document.querySelectorAll('.nav-item');
+    <!-- Custom JS -->
+    <script src="assets/js/nav_handler.js"></script>
+    <script src="assets/js/wallet_handler.js"></script>
 
-            // Sembunyikan preloader saat halaman selesai dimuat
-            preloader.classList.remove('show');
-
-            // Tambahkan event listener ke semua link navigasi
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault(); // Mencegah perpindahan halaman instan
-                    const destination = this.href;
-
-                    // Tampilkan preloader
-                    preloader.classList.add('show');
-
-                    // Tunggu sebentar lalu pindah halaman
-                    setTimeout(() => {
-                        window.location.href = destination;
-                    }, 500); // 0.5 detik untuk efek transisi
-                });
-            });
-
-            // Handle back/forward browser
-            window.addEventListener('pageshow', function(event) {
-                if (event.persisted) {
-                    preloader.classList.remove('show');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
