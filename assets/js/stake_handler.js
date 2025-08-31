@@ -33,8 +33,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let selectedPlan = 'flexible';
     let contracts = {};
     let blockchainConfig = {};
+    let activeStakeData = null; // Menyimpan data stake aktif
 
-    // --- REVISI: Sistem Notifikasi Kustom ---
+    // --- Sistem Notifikasi Kustom ---
     const alertOverlay = document.getElementById('customAlert');
     const alertPopup = alertOverlay.querySelector('.custom-alert-popup');
     const alertIconEl = document.getElementById('alertIcon');
@@ -97,7 +98,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 greetingWalletEl.textContent = `Hello, ${formatWalletAddress(userAddress)}`;
                 
                 if (data.has_active_stake) {
-                    displayManageStakeView(data.active_stake_details);
+                    activeStakeData = data.active_stake_details; // Simpan data stake
+                    displayManageStakeView(activeStakeData);
                 } else {
                     await initializeNewStakeView();
                 }
@@ -151,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         activeProfitMaxEl.textContent = `Max: $${details.profit_cycle.max} (500%)`;
         activeProfitProgressEl.style.width = `${details.profit_cycle.percentage}%`;
         
-        if (details.plan !== 'Flexible' && new Date() < new Date(details.expires_at)) {
+        if (details.plan !== 'Flexible' && details.expires_at && new Date() < new Date(details.expires_at)) {
             unstakeBtn.disabled = true;
             unstakeBtn.textContent = `Locked until ${details.expires_at}`;
         } else {
@@ -172,7 +174,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         stakeBtn.disabled = usdtValue < 10;
     };
     
+    // --- Proses Staking & Unstaking ---
+
     const handleStake = async () => {
+        // ... (fungsi handleStake tetap sama seperti sebelumnya) ...
         stakeBtn.disabled = true;
         stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
         
@@ -204,13 +209,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             await syncStakeToBackend(stakeId, amount, receipt.transactionHash);
             
             showCustomAlert("Success!", "Your tokens have been staked successfully. You will be redirected shortly.");
-            setTimeout(() => window.location.href = 'home.php', 3000);
+            setTimeout(() => window.location.reload(), 3000);
 
         } catch (error) {
             console.error("Staking process failed:", error);
-            // Memberikan pesan yang lebih ramah pengguna
             let userMessage = "An unexpected error occurred. Please check your wallet and try again.";
-            if (error.code === 4001) { // Kode error umum untuk penolakan transaksi oleh user
+            if (error.code === 4001) {
                 userMessage = "The transaction was rejected. Please try again if you wish to proceed.";
             } else if (error.message.includes("insufficient funds")) {
                 userMessage = "You have insufficient funds to complete this transaction.";
@@ -240,6 +244,65 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    // --- FUNGSI BARU: Handle Unstake ---
+    const handleUnstake = async () => {
+        unstakeBtn.disabled = true;
+        unstakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+        try {
+            // Backend sudah memvalidasi, tapi kita bisa validasi lagi di frontend
+            if (!activeStakeData) throw new Error("No active stake data found.");
+
+            // Dapatkan stakeId dari backend. Ini adalah kunci.
+            // Untuk sekarang, kita asumsikan activeStakeData akan berisi stake_id_onchain
+            // Kita perlu memodifikasi get_stake_page_info.php untuk ini
+            const stakeIdOnchain = activeStakeData.stake_id_onchain; 
+            if(!stakeIdOnchain) throw new Error("Stake ID is missing.");
+
+            if (!contracts.staking) {
+                contracts.staking = new ethers.Contract(blockchainConfig.langitStaking.address, blockchainConfig.langitStaking.abi, signer);
+            }
+
+            unstakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Unstaking...';
+            // Panggil fungsi `unstake` di smart contract
+            const unstakeTx = await contracts.staking.unstake(stakeIdOnchain);
+            const receipt = await unstakeTx.wait();
+
+            // Kirim data ke backend untuk update status
+            await syncUnstakeToBackend(stakeIdOnchain, receipt.transactionHash);
+
+            showCustomAlert("Unstake Initiated", "Your stake is now in the vesting period. You can start claiming your tokens from the Home page.");
+            setTimeout(() => window.location.reload(), 3000);
+
+        } catch (error) {
+            console.error("Unstake process failed:", error);
+            let userMessage = "An unexpected error occurred during unstake.";
+            if (error.code === 4001) {
+                userMessage = "The unstake transaction was rejected.";
+            }
+            showCustomAlert("Unstake Failed", userMessage, "error");
+        } finally {
+            unstakeBtn.disabled = false;
+            unstakeBtn.textContent = 'Unstake Now';
+        }
+    };
+    
+    const syncUnstakeToBackend = async (stakeId, txHash) => {
+        const payload = {
+            stake_id_onchain: stakeId,
+            tx_hash: txHash
+        };
+        const response = await fetch('api/execute_unstake.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (result.status !== 'success') {
+            throw new Error('Backend unstake sync failed: ' + result.message);
+        }
+    };
+
 
     // --- Event Listeners ---
     stakeAmountInput.addEventListener('input', updateSummary);
@@ -252,6 +315,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
     stakeBtn.addEventListener('click', handleStake);
+    // Tambahkan event listener untuk tombol unstake
+    unstakeBtn.addEventListener('click', handleUnstake);
+
 
     // --- Inisialisasi ---
     await loadConfig();
