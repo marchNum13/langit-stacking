@@ -174,7 +174,7 @@ class StakeTableClass extends connMySQL
     }
     
     /**
-     * FUNGSI BARU: Menghitung total nilai USDT dari staking dengan status tertentu.
+     * Menghitung total nilai USDT dari staking dengan status tertentu.
      *
      * @param int $userId ID pengguna.
      * @param string $status Status yang dicari (misal: 'active').
@@ -196,7 +196,7 @@ class StakeTableClass extends connMySQL
     }
     
     /**
-     * FUNGSI BARU: Menghitung total USDT yang sudah ditarik oleh seorang pengguna.
+     * Menghitung total USDT yang sudah ditarik oleh seorang pengguna.
      *
      * @param int $userId ID pengguna.
      * @return float Total USDT yang sudah ditarik.
@@ -236,7 +236,7 @@ class StakeTableClass extends connMySQL
     }
 
     /**
-     * FUNGSI BARU: Menghitung total omset dari daftar user ID.
+     * Menghitung total omset dari daftar user ID.
      */
     public function getTotalStakesForUserList(array $userIds): float
     {
@@ -257,6 +257,38 @@ class StakeTableClass extends connMySQL
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         $stmt->close();
+        return (float)($row['total'] ?? 0.0);
+    }
+
+    /**
+     * FUNGSI BARU: Mengambil semua staking yang sedang aktif di seluruh platform.
+     *
+     * @return array Daftar semua staking aktif.
+     */
+    public function getAllActiveStakes(): array
+    {
+        $conn = $this->dbConn();
+        $sql = "SELECT * FROM {$this->table_name} WHERE {$this->col_status} = 'active'";
+        $result = $conn->query($sql);
+        $stakes = $result->fetch_all(MYSQLI_ASSOC);
+        $result->close();
+        return $stakes;
+    }
+
+    /**
+     * FUNGSI BARU: Menghitung total modal aktif di seluruh platform.
+     *
+     * @return float Total modal aktif dalam USDT.
+     */
+    public function getTotalPlatformActiveStake(): float
+    {
+        $conn = $this->dbConn();
+        $sql = "SELECT SUM({$this->col_amount_usdt_initial}) as total 
+                FROM {$this->table_name} 
+                WHERE {$this->col_status} = 'active'";
+        $result = $conn->query($sql);
+        $row = $result->fetch_assoc();
+        $result->close();
         return (float)($row['total'] ?? 0.0);
     }
 }
