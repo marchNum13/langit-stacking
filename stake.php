@@ -8,146 +8,134 @@
     <?php include "seo.php" ?>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts (Space Grotesk) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body class="page-app">
 
-    <!-- Preloader -->
-    <div class="preloader">
+    <div class="preloader show">
         <img src="assets/images/logo-langit.png" alt="Loading..." class="loader-logo">
     </div>
 
     <div class="container">
-        <!-- Header ditambahkan di sini -->
         <header class="d-flex justify-content-between align-items-center header">
-            <div class="greeting-wallet">Hello, 0x123...abcd</div>
-            <a href="#" class="disconnect-btn">
+            <div id="greetingWallet" class="greeting-wallet">Loading...</div>
+            <a href="#" id="disconnectBtn" class="disconnect-btn">
                 <i class="fas fa-sign-out-alt"></i>
             </a>
         </header>
 
-        <!-- Judul Halaman -->
-        <h1 class="page-title">Start Staking</h1>
-
-        <!-- Main Content -->
         <main>
-            <!-- Input Jumlah Staking -->
-            <section class="form-group-custom">
-                <label for="stakeAmount" class="form-label-custom">Amount in Langit</label>
-                <input type="number" class="form-control form-control-custom" id="stakeAmount" placeholder="0.00">
-                <div class="d-flex justify-content-between input-info">
-                    <span>Your Balance: 10,000 LANGIT</span>
-                    <span>≈ $ 123.45 USDT</span>
-                </div>
-                 <div class="text-start input-info mt-1">
-                    <span>1 LANGIT ≈ $0.01234 USDT</span>
-                </div>
-            </section>
+            <!-- =========================================================== -->
+            <!-- Tampilan #1: Form Untuk Staking Baru (Defaultnya terlihat)  -->
+            <!-- =========================================================== -->
+            <div id="newStakeView">
+                <h1 class="page-title">Start Staking</h1>
+                
+                <section class="form-group-custom">
+                    <label for="stakeAmount" class="form-label-custom">Amount in Langit</label>
+                    <input type="number" class="form-control form-control-custom" id="stakeAmount" placeholder="0.00">
+                    <div class="d-flex justify-content-between input-info">
+                        <span id="langitBalance">Your Balance: 0.00 LANGIT</span>
+                        <span id="usdtValue">≈ $ 0.00 USDT</span>
+                    </div>
+                     <div class="text-start input-info mt-1">
+                        <span id="langitPrice">1 LANGIT ≈ $0.00 USDT</span>
+                    </div>
+                </section>
 
-            <!-- Pilihan Plan Kontrak -->
-            <section class="form-group-custom plan-selection">
-                <label class="form-label-custom">Select Contract Plan</label>
-                <button class="btn plan-btn active">
-                    <div class="plan-title">Flexible</div>
-                    <div class="plan-roi">Daily ROI: 0.3% - 1.5%</div>
-                </button>
-                <button class="btn plan-btn">
-                    <div class="plan-title">6 Months</div>
-                    <div class="plan-roi">Daily ROI: 0.4% - 1.5%</div>
-                </button>
-                <button class="btn plan-btn">
-                    <div class="plan-title">12 Months</div>
-                    <div class="plan-roi">Daily ROI: 0.5% - 1.5%</div>
-                </button>
-            </section>
+                <section class="form-group-custom plan-selection">
+                    <label class="form-label-custom">Select Contract Plan</label>
+                    <button class="btn plan-btn active" data-plan="flexible">
+                        <div class="plan-title">Flexible</div>
+                        <div class="plan-roi">Daily ROI: 0.3% - 1.5%</div>
+                    </button>
+                    <button class="btn plan-btn" data-plan="6_months">
+                        <div class="plan-title">6 Months</div>
+                        <div class="plan-roi">Daily ROI: 0.4% - 1.5%</div>
+                    </button>
+                    <button class="btn plan-btn" data-plan="12_months">
+                        <div class="plan-title">12 Months</div>
+                        <div class="plan-roi">Daily ROI: 0.5% - 1.5%</div>
+                    </button>
+                </section>
 
-            <!-- Ringkasan Konfirmasi -->
-            <section class="confirmation-summary mb-4">
-                 <div class="summary-item d-flex justify-content-between align-items-center">
-                    <span class="item-label">Stake Amount</span>
-                    <span class="item-value">10,000 LANGIT</span>
-                </div>
-                 <div class="summary-item d-flex justify-content-between align-items-center">
-                    <span class="item-label">Current Value</span>
-                    <span class="item-value">~ $123.45 USDT</span>
-                </div>
-                 <div class="summary-item d-flex justify-content-between align-items-center">
-                    <span class="item-label">Selected Plan</span>
-                    <span class="item-value">Flexible</span>
-                </div>
-            </section>
+                <section class="confirmation-summary mb-4">
+                     <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Stake Amount</span>
+                        <span id="summaryAmountLangit" class="item-value">0.00 LANGIT</span>
+                    </div>
+                     <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Current Value</span>
+                        <span id="summaryAmountUsdt" class="item-value">~ $0.00 USDT</span>
+                    </div>
+                     <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Selected Plan</span>
+                        <span id="summaryPlan" class="item-value">Flexible</span>
+                    </div>
+                </section>
 
-            <!-- Tombol Aksi -->
-            <section class="d-grid gap-2 mb-4">
-                <button class="btn cta-button">Confirm Stake</button>
-            </section>
+                <section class="d-grid gap-2 mb-4">
+                    <button id="stakeBtn" class="btn cta-button" disabled>Confirm Stake</button>
+                </section>
+            </div>
+
+            <!-- =========================================================== -->
+            <!-- Tampilan #2: Manajemen Stake Aktif (Defaultnya tersembunyi) -->
+            <!-- =========================================================== -->
+            <div id="manageStakeView" class="d-none">
+                <h1 class="page-title">Manage Your Stake</h1>
+
+                <section class="summary-card mb-4">
+                    <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Current Plan</span>
+                        <span id="activePlan" class="item-value">Loading...</span>
+                    </div>
+                    <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Staked Amount</span>
+                        <div>
+                            <span id="activeAmountLangit" class="item-value d-block text-end">0.00 LANGIT</span>
+                            <span id="activeAmountUsdt" class="text-secondary small d-block text-end">~ $0.00 USDT</span>
+                        </div>
+                    </div>
+                    <div class="summary-item d-flex justify-content-between align-items-center">
+                        <span class="item-label">Staking Date</span>
+                        <span id="activeStartDate" class="item-value">Loading...</span>
+                    </div>
+                </section>
+
+                <section class="summary-card mb-4">
+                    <h2 class="section-title">Staking Profit Cycle</h2>
+                    <div class="d-flex justify-content-between align-items-center mb-2 text-secondary small">
+                        <span id="activeProfitAchieved">Achieved: $0.00</span>
+                        <span id="activeProfitMax">Max: $0.00 (500%)</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div id="activeProfitProgress" class="progress-fill" style.width="0%;"></div>
+                    </div>
+                </section>
+
+                <section class="d-grid gap-2 mb-4">
+                    <button id="unstakeBtn" class="btn cta-button btn-danger">Unstake Now</button>
+                </section>
+            </div>
+
         </main>
     </div>
 
-    <!-- Navigasi Bawah -->
-    <nav class="bottom-nav">
-        <a href="home.php" class="nav-item">
-            <i class="fas fa-home nav-icon"></i>
-            <span class="nav-label">Home</span>
-        </a>
-        <a href="stake.php" class="nav-item active">
-            <i class="fas fa-layer-group nav-icon"></i>
-            <span class="nav-label">Stake</span>
-        </a>
-        <a href="network.php" class="nav-item">
-            <i class="fas fa-sitemap nav-icon"></i>
-            <span class="nav-label">Network</span>
-        </a>
-        <a href="wallet.php" class="nav-item">
-            <i class="fas fa-wallet nav-icon"></i>
-            <span class="nav-label">Wallet</span>
-        </a>
-        <a href="history.php" class="nav-item">
-            <i class="fas fa-history nav-icon"></i>
-            <span class="nav-label">History</span>
-        </a>
-    </nav>
+    <?php include "nav.php"; ?>
 
+    <!-- JS Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="assets/js/nav_handler.js"></script>
+    <script src="assets/js/stake_handler.js"></script>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const preloader = document.querySelector('.preloader');
-            const navLinks = document.querySelectorAll('.nav-item');
-
-            // Sembunyikan preloader saat halaman selesai dimuat
-            preloader.classList.remove('show');
-
-            // Tambahkan event listener ke semua link navigasi
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault(); // Mencegah perpindahan halaman instan
-                    const destination = this.href;
-
-                    // Tampilkan preloader
-                    preloader.classList.add('show');
-
-                    // Tunggu sebentar lalu pindah halaman
-                    setTimeout(() => {
-                        window.location.href = destination;
-                    }, 500); // 0.5 detik untuk efek transisi
-                });
-            });
-
-            // Handle back/forward browser
-            window.addEventListener('pageshow', function(event) {
-                if (event.persisted) {
-                    preloader.classList.remove('show');
-                }
-            });
-        });
-    </script>
 </body>
 </html>
+
