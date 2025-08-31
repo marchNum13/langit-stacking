@@ -15,6 +15,8 @@ require_once '../database/UserTableClass.php';
 require_once '../database/StakeTableClass.php';
 require_once '../database/TransactionTableClass.php';
 require_once '../utils/MarketPriceFetcher.php';
+// PENAMBAHAN: Memuat GradeManager
+require_once '../utils/GradeManager.php';
 
 // Fungsi untuk mengirim respons error
 function send_error($message) {
@@ -101,8 +103,11 @@ try {
     ];
     $transactionTable->createTransaction($transactionData);
     
-    // 8. TODO: Implementasikan pemicu untuk pengecekan grade upline di sini
-    // checkAndUpgradeUplines($user['upline_wallet']);
+    // 8. REVISI: Implementasikan pemicu untuk pengecekan grade upline
+    if (isset($user['upline_wallet']) && !empty($user['upline_wallet'])) {
+        $gradeManager = new GradeManager($userTable, $stakeTable);
+        $gradeManager->checkAndUpgradeUplines($user['upline_wallet']);
+    }
 
     echo json_encode(['status' => 'success', 'message' => 'Staking was successful and recorded.']);
 
