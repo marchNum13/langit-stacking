@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let contracts = {};
     let blockchainConfig = {};
 
-    // --- Sistem Notifikasi Kustom ---
+    // --- Sistem Notifikasi Kustom (diasumsikan sudah ada) ---
     const alertOverlay = document.getElementById('customAlert');
     const alertPopup = alertOverlay.querySelector('.custom-alert-popup');
     const alertIconEl = document.getElementById('alertIcon');
@@ -36,12 +36,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         alertOverlay.classList.add('show');
     };
     alertCloseBtn.addEventListener('click', () => alertOverlay.classList.remove('show'));
-    alertOverlay.addEventListener('click', (e) => {
-        if (e.target === alertOverlay) {
-            alertOverlay.classList.remove('show');
-        }
-    });
-
 
     // --- Inisialisasi & Fungsi Helper ---
     const formatWalletAddress = (address) => address ? `${address.substring(0, 5)}...${address.substring(address.length - 4)}` : '';
@@ -70,13 +64,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 greetingWalletEl.textContent = `Hello, ${formatWalletAddress(userAddress)}`;
                 balanceAmountEl.textContent = `$ ${availableBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-                // Cek syarat grade
-                if (!data.user_grade || data.user_grade < 'A') {
-                    withdrawForm.classList.add('d-none');
-                    noWithdrawMessage.classList.remove('d-none');
-                } else {
+                // REVISI: Menggunakan flag baru dari backend
+                if (data.is_eligible_for_withdraw) {
                     withdrawForm.classList.remove('d-none');
                     noWithdrawMessage.classList.add('d-none');
+                } else {
+                    withdrawForm.classList.add('d-none');
+                    noWithdrawMessage.classList.remove('d-none');
+                    // Ganti pesan menjadi lebih informatif
+                    noWithdrawMessage.textContent = "You are not eligible for withdrawals. You must have at least Grade A and an active stake.";
                 }
             } else {
                 if (result.message.includes('authenticated')) window.location.href = 'index.php';
@@ -93,7 +89,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const equivalent = amountUSDT > 0 && langitPrice > 0 ? amountUSDT / langitPrice : 0;
         equivalentLangitEl.textContent = `You will receive ≈ ${equivalent.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})} LANGIT`;
         
-        // Validasi tombol
         withdrawBtn.disabled = !(amountUSDT >= 5 && amountUSDT <= availableBalance);
     };
 
@@ -104,7 +99,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const amountUSDT = parseFloat(withdrawAmountInput.value);
 
         try {
-            // 1. Panggil API prepare_withdraw
             const prepareResponse = await fetch('api/prepare_withdraw.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -112,13 +106,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             const prepareResult = await prepareResponse.json();
 
-            if (prepareResult.status !== 'success') {
-                throw new Error(prepareResult.message);
-            }
+            if (prepareResult.status !== 'success') throw new Error(prepareResult.message);
 
             const { stake_id_onchain, amount_in_langit_wei, is_burn, actual_withdraw_usdt } = prepareResult.data;
 
-            // 2. Panggil Smart Contract
             withdrawBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Confirmation...';
             if (!contracts.staking) {
                 contracts.staking = new ethers.Contract(blockchainConfig.langitStaking.address, blockchainConfig.langitStaking.abi, signer);
@@ -126,23 +117,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             const claimTx = await contracts.staking.claimLangit(stake_id_onchain, amount_in_langit_wei, is_burn);
             const receipt = await claimTx.wait();
 
-            // 3. Panggil API execute_withdraw
             withdrawBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Finalizing...';
             const executeResponse = await fetch('api/execute_withdraw.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    stake_id_onchain: stake_id_onchain,
+                    stake_id_onchain,
                     amount_usdt: actual_withdraw_usdt,
                     tx_hash: receipt.transactionHash,
-                    is_burn: is_burn
+                    is_burn
                 })
             });
             const executeResult = await executeResponse.json();
 
-            if (executeResult.status !== 'success') {
-                throw new Error(executeResult.message);
-            }
+            if (executeResult.status !== 'success') throw new Error(executeResult.message);
 
             showCustomAlert("Withdrawal Success!", `You have successfully withdrawn $${actual_withdraw_usdt}. The LANGIT tokens are on their way to your wallet.`);
             setTimeout(() => window.location.reload(), 3000);
@@ -156,7 +144,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
     
-    // --- Inisialisasi ---
     const initializeApp = async () => {
         await loadConfig();
         if (typeof window.ethereum !== 'undefined') {
