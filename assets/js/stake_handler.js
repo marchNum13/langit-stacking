@@ -31,8 +31,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     let provider, signer, userAddress;
     let langitPrice = 0;
     let selectedPlan = 'flexible';
-    let contracts = {}; // Untuk menyimpan instance kontrak
-    let blockchainConfig = {}; // Untuk menyimpan ABI dan alamat
+    let contracts = {};
+    let blockchainConfig = {};
+
+    // --- REVISI: Sistem Notifikasi Kustom ---
+    const alertOverlay = document.getElementById('customAlert');
+    const alertPopup = alertOverlay.querySelector('.custom-alert-popup');
+    const alertIconEl = document.getElementById('alertIcon');
+    const alertTitleEl = document.getElementById('alertTitle');
+    const alertMessageEl = document.getElementById('alertMessage');
+    const alertCloseBtn = document.getElementById('alertCloseBtn');
+
+    const icons = {
+        success: '<i class="fas fa-check-circle"></i>',
+        error: '<i class="fas fa-times-circle"></i>',
+        warning: '<i class="fas fa-exclamation-triangle"></i>'
+    };
+
+    const showCustomAlert = (title, message, type = 'success') => {
+        alertIconEl.innerHTML = icons[type] || icons.success;
+        alertTitleEl.textContent = title;
+        alertMessageEl.textContent = message;
+        
+        alertPopup.className = 'custom-alert-popup ' + type;
+        alertOverlay.classList.add('show');
+    };
+
+    alertCloseBtn.addEventListener('click', () => alertOverlay.classList.remove('show'));
+    alertOverlay.addEventListener('click', (e) => {
+        if (e.target === alertOverlay) {
+            alertOverlay.classList.remove('show');
+        }
+    });
 
     // --- Inisialisasi & Fungsi Helper ---
 
@@ -41,29 +71,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         return `${address.substring(0, 5)}...${address.substring(address.length - 4)}`;
     };
     
-    // Fungsi untuk menampilkan pesan error atau sukses
-    const showToast = (message, isError = false) => {
-        // Implementasi toast/notifikasi sederhana di sini
-        alert(message);
-    };
-
-    // Fungsi untuk memuat konfigurasi blockchain
     const loadConfig = async () => {
         try {
             const response = await fetch('blockchain_config.json');
-            if (!response.ok) {
-                throw new Error("blockchain_config.json not found");
-            }
+            if (!response.ok) throw new Error("blockchain_config.json not found");
             blockchainConfig = await response.json();
         } catch (error) {
             console.error(error);
-            showToast("Failed to load blockchain configuration.", true);
+            showCustomAlert("Configuration Error", "Could not load essential application settings. Please try refreshing the page.", "error");
         }
     };
 
     // --- Logika Utama ---
 
-    // Fungsi untuk mengambil data awal halaman
     const fetchPageInfo = async () => {
         try {
             const response = await fetch('api/get_stake_page_info.php');
@@ -91,7 +111,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Fungsi untuk menyiapkan tampilan staking baru
     const initializeNewStakeView = async () => {
         newStakeView.classList.remove('d-none');
         manageStakeView.classList.add('d-none');
@@ -101,7 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!provider) provider = new ethers.providers.Web3Provider(window.ethereum);
         if (!signer) signer = provider.getSigner();
         
-        // Pastikan config sudah dimuat
         if (!blockchainConfig.langitToken) {
              console.error("Blockchain config not loaded correctly.");
              return;
@@ -117,11 +135,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             console.error("Could not get LANGIT balance:", e);
             langitBalanceEl.textContent = 'Your Balance: Error';
         }
-
         updateSummary();
     };
 
-    // Fungsi untuk menampilkan tampilan manajemen stake
     const displayManageStakeView = (details) => {
         newStakeView.classList.add('d-none');
         manageStakeView.classList.remove('d-none');
@@ -135,7 +151,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         activeProfitMaxEl.textContent = `Max: $${details.profit_cycle.max} (500%)`;
         activeProfitProgressEl.style.width = `${details.profit_cycle.percentage}%`;
         
-        // Logika untuk tombol unstake (termasuk lock period)
         if (details.plan !== 'Flexible' && new Date() < new Date(details.expires_at)) {
             unstakeBtn.disabled = true;
             unstakeBtn.textContent = `Locked until ${details.expires_at}`;
@@ -145,23 +160,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // Fungsi untuk update ringkasan saat input berubah
     const updateSummary = () => {
         const amount = parseFloat(stakeAmountInput.value) || 0;
         const usdtValue = amount * langitPrice;
 
         usdtValueEl.textContent = `≈ $ ${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
-        
         summaryAmountLangit.textContent = `${amount.toLocaleString()} LANGIT`;
         summaryAmountUsdt.textContent = `~ $${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
         summaryPlan.textContent = selectedPlan.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-        // Validasi untuk tombol stake
         stakeBtn.disabled = usdtValue < 10;
     };
     
-    // --- Proses Staking (On-chain & Off-chain) ---
-
     const handleStake = async () => {
         stakeBtn.disabled = true;
         stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
@@ -169,7 +179,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const amount = stakeAmountInput.value;
             if (!amount || parseFloat(amount) <= 0) {
-                throw new Error("Invalid amount");
+                throw new Error("Invalid amount. Please enter a number greater than zero.");
             }
             const amountInWei = ethers.utils.parseUnits(amount, 18);
 
@@ -180,29 +190,32 @@ document.addEventListener('DOMContentLoaded', async () => {
                  contracts.langit = new ethers.Contract(blockchainConfig.langitToken.address, blockchainConfig.langitToken.abi, signer);
             }
 
-            // 1. Approve
             stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Approval...';
             const approveTx = await contracts.langit.approve(contracts.staking.address, amountInWei);
             await approveTx.wait();
 
-            // 2. Generate Stake ID
             const stakeId = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(userAddress + amount + Date.now()));
             
-            // 3. Stake
             stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Awaiting Staking...';
             const stakeTx = await contracts.staking.stake(stakeId, amountInWei);
             const receipt = await stakeTx.wait();
 
-            // 4. Sync to Backend
             stakeBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Syncing...';
             await syncStakeToBackend(stakeId, amount, receipt.transactionHash);
             
-            showToast("Staking successful!");
-            window.location.href = 'home.php';
+            showCustomAlert("Success!", "Your tokens have been staked successfully. You will be redirected shortly.");
+            setTimeout(() => window.location.href = 'home.php', 3000);
 
         } catch (error) {
             console.error("Staking process failed:", error);
-            showToast("Staking process failed: " + (error.data?.message || error.message), true);
+            // Memberikan pesan yang lebih ramah pengguna
+            let userMessage = "An unexpected error occurred. Please check your wallet and try again.";
+            if (error.code === 4001) { // Kode error umum untuk penolakan transaksi oleh user
+                userMessage = "The transaction was rejected. Please try again if you wish to proceed.";
+            } else if (error.message.includes("insufficient funds")) {
+                userMessage = "You have insufficient funds to complete this transaction.";
+            }
+            showCustomAlert("Transaction Failed", userMessage, "error");
         } finally {
             stakeBtn.disabled = false;
             stakeBtn.textContent = 'Confirm Stake';
@@ -239,7 +252,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
     stakeBtn.addEventListener('click', handleStake);
-
 
     // --- Inisialisasi ---
     await loadConfig();

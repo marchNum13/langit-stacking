@@ -126,6 +126,18 @@
         </main>
     </div>
 
+    <!-- PENAMBAHAN BARU: Struktur HTML untuk Notifikasi Pop-up -->
+    <div id="customAlert" class="custom-alert-overlay">
+        <div class="custom-alert-popup">
+            <div id="alertIcon" class="alert-icon">
+                <!-- Ikon akan diisi oleh JavaScript -->
+            </div>
+            <h3 id="alertTitle" class="alert-title"></h3>
+            <p id="alertMessage" class="alert-message"></p>
+            <button id="alertCloseBtn" class="btn alert-close-btn">Close</button>
+        </div>
+    </div>
+
     <?php include "nav.php"; ?>
 
     <!-- JS Libraries -->
