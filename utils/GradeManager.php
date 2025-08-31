@@ -41,7 +41,7 @@ class GradeManager
             $uplineUser = $this->userTable->getUserByWalletAddress($currentUplineWallet);
             
             // Jika upline tidak ditemukan atau sudah mencapai grade tertinggi, berhenti.
-            if (!$uplineUser || $uplineUser['grade'] === 'H') {
+            if (!$uplineUser) {
                 break;
             }
 
