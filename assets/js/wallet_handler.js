@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 langitPrice = parseFloat(data.langit_price_usdt);
 
                 greetingWalletEl.textContent = `Hello, ${formatWalletAddress(userAddress)}`;
-                balanceAmountEl.textContent = `$ ${availableBalance.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                balanceAmountEl.textContent = `$ ${availableBalance.toLocaleString('en-US', {minimumFractionDigits: 4, maximumFractionDigits: 4})}`;
 
                 // REVISI: Menggunakan flag baru dari backend
                 if (data.is_eligible_for_withdraw) {

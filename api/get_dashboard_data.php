@@ -65,13 +65,13 @@ try {
     $dashboardData = [
         'wallet_address' => $walletAddress,
         'user_grade' => $user['grade'] ?? 'N/A',
-        'total_active_stake' => number_format($totalActiveStake, 2, '.', ','),
-        'total_earnings' => number_format($totalEarnings, 2, '.', ','),
-        'network_turnover' => number_format($networkTurnover, 2, '.', ','),
+        'total_active_stake' => number_format($totalActiveStake, 4, '.', ','),
+        'total_earnings' => number_format($totalEarnings, 4, '.', ','),
+        'network_turnover' => number_format($networkTurnover, 4, '.', ','),
         'earnings_breakdown' => [
-            'staking_roi' => number_format((float)$balances['staking_roi'], 2, '.', ','),
-            'matching_bonus' => number_format((float)$balances['matching_bonus'], 2, '.', ','),
-            'royalty_bonus' => number_format((float)$balances['royalty_bonus'], 2, '.', ',')
+            'staking_roi' => number_format((float)$balances['staking_roi'], 4, '.', ','),
+            'matching_bonus' => number_format((float)$balances['matching_bonus'], 4, '.', ','),
+            'royalty_bonus' => number_format((float)$balances['royalty_bonus'], 4, '.', ',')
         ],
         'profit_cycle' => [
             'achieved' => number_format($totalWithdrawn, 2, '.', ','),

@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let amountHTML = '';
         if (tx.amount_usdt) {
             const sign = isIncome ? '+' : '-';
-            amountHTML = `<div class="transaction-amount ${iconColorClass}">${sign} $${parseFloat(tx.amount_usdt).toFixed(2)}</div>`;
+            amountHTML = `<div class="transaction-amount ${iconColorClass}">${sign} $${parseFloat(tx.amount_usdt).toFixed(4)}</div>`;
         } else if (tx.amount_langit) {
             amountHTML = `<div class="transaction-amount">${parseFloat(tx.amount_langit).toFixed(2)} LANGIT</div>`;
         }
