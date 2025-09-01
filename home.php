@@ -112,8 +112,23 @@
                     </div>
                 </div>
             </section>
+
+            <section id="vestingClaimsContainer" class="mb-4">
+                <!-- Konten akan diisi oleh dashboard.js -->
+            </section>
         </main>
     </div>
+
+    <!-- Pop-up Notifikasi -->
+    <div id="customAlert" class="custom-alert-overlay">
+        <div class="custom-alert-popup">
+            <div id="alertIcon" class="alert-icon"></div>
+            <h3 id="alertTitle" class="alert-title"></h3>
+            <p id="alertMessage" class="alert-message"></p>
+            <button id="alertCloseBtn" class="btn alert-close-btn">Close</button>
+        </div>
+    </div>
+
 
     <!-- Panggil nav.php -->
     <?php include "nav.php"; ?>

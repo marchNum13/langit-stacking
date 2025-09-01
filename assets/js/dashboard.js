@@ -1,5 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.querySelector('.preloader');
+    const vestingClaimsContainer = document.getElementById('vestingClaimsContainer');
+
+    // --- State Aplikasi ---
+    let provider, signer, contracts = {}, blockchainConfig = {};
+
+    // --- Sistem Notifikasi Kustom ---
+    const alertOverlay = document.getElementById('customAlert');
+    const alertPopup = alertOverlay.querySelector('.custom-alert-popup');
+    const alertIconEl = document.getElementById('alertIcon');
+    const alertTitleEl = document.getElementById('alertTitle');
+    const alertMessageEl = document.getElementById('alertMessage');
+    const alertCloseBtn = document.getElementById('alertCloseBtn');
+    const icons = {
+        success: '<i class="fas fa-check-circle"></i>',
+        error: '<i class="fas fa-times-circle"></i>',
+    };
+    const showCustomAlert = (title, message, type = 'success') => {
+        alertIconEl.innerHTML = icons[type] || icons.success;
+        alertTitleEl.textContent = title;
+        alertMessageEl.textContent = message;
+        alertPopup.className = 'custom-alert-popup ' + type;
+        alertOverlay.classList.add('show');
+    };
+    alertCloseBtn.addEventListener('click', () => alertOverlay.classList.remove('show'));
+    
+    const loadConfig = async () => {
+        try {
+            const response = await fetch('blockchain_config.json');
+            blockchainConfig = await response.json();
+        } catch(e) {
+            showCustomAlert('Configuration Error', 'Could not load application settings.', 'error');
+        }
+    };
 
     // Fungsi untuk memformat alamat wallet
     const formatWalletAddress = (address) => {
@@ -26,6 +59,97 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.style.width = `${data.profit_cycle.percentage}%`;
     };
 
+    const createVestingItemHTML = (stake) => {
+        const totalAmount = parseFloat(stake.amount_langit).toLocaleString('en-US', {maximumFractionDigits: 2});
+        return `
+            <div class="summary-card vesting-card mb-3">
+                <h2 class="section-title">Vesting Claim Available</h2>
+                <div class="summary-item d-flex justify-content-between align-items-center">
+                    <span class="item-label">Total Unstaked Principal</span>
+                    <span class="item-value">${totalAmount} LANGIT</span>
+                </div>
+                <div class="d-grid gap-2">
+                    <button class="btn cta-button claim-vesting-btn" data-stake-id="${stake.stake_id_onchain}">
+                        Claim Vested Tokens
+                    </button>
+                </div>
+            </div>
+        `;
+    };
+
+    const fetchAndDisplayVestingClaims = async () => {
+        try {
+            const response = await fetch('api/get_vesting_info.php');
+            const result = await response.json();
+            if (result.status === 'success' && result.data.length > 0) {
+                vestingClaimsContainer.innerHTML = '';
+                result.data.forEach(stake => {
+                    vestingClaimsContainer.innerHTML += createVestingItemHTML(stake);
+                });
+            }
+        } catch (error) {
+            console.error("Failed to fetch vesting claims:", error);
+        }
+    };
+    
+    const handleClaimVesting = async (e) => {
+        const claimBtn = e.target;
+        const stakeId = claimBtn.dataset.stakeId;
+        if (!stakeId) return;
+
+        claimBtn.disabled = true;
+        claimBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Claiming...';
+
+        try {
+            if (!contracts.staking) {
+                contracts.staking = new ethers.Contract(blockchainConfig.langitStaking.address, blockchainConfig.langitStaking.abi, signer);
+            }
+
+            const claimTx = await contracts.staking.claimVestedTokens(stakeId);
+            const receipt = await claimTx.wait();
+            
+            let amountClaimed = 0;
+            const event = receipt.events?.find(e => e.event === 'VestingClaimed');
+            if(event) {
+                amountClaimed = ethers.utils.formatUnits(event.args.amount, 18);
+            }
+
+            const stakeInfo = await contracts.staking.getStakeInfo(stakeId);
+            const isComplete = stakeInfo.status === 2; // 2 adalah enum 'Completed'
+
+            await syncVestingClaimToBackend(stakeId, receipt.transactionHash, amountClaimed, isComplete);
+            
+            showCustomAlert("Claim Successful", `You have successfully claimed ${parseFloat(amountClaimed).toFixed(2)} LANGIT.`);
+            setTimeout(() => window.location.reload(), 3000);
+
+        } catch (error) {
+            console.error("Vesting claim failed:", error);
+            showCustomAlert("Claim Failed", "The transaction failed. Please try again.", "error");
+        } finally {
+            claimBtn.disabled = false;
+            claimBtn.innerHTML = 'Claim Vested Tokens';
+        }
+    };
+
+    const syncVestingClaimToBackend = async (stakeId, txHash, amount, isComplete) => {
+        await fetch('api/execute_vesting_claim.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                stake_id_onchain: stakeId,
+                tx_hash: txHash,
+                amount_langit_claimed: amount,
+                is_complete: isComplete
+            })
+        });
+    };
+
+    vestingClaimsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('claim-vesting-btn')) {
+            handleClaimVesting(e);
+        }
+    });
+
     // Fungsi utama untuk mengambil data dari backend
     const fetchDashboardData = async () => {
         try {
@@ -43,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.status === 'success') {
                 updateDashboardUI(result.data);
+                await fetchAndDisplayVestingClaims();
             } else {
                 // Jika error karena tidak terautentikasi, redirect ke halaman login
                 if (result.message.includes('authenticated')) {
@@ -60,6 +185,21 @@ document.addEventListener('DOMContentLoaded', () => {
             preloader.classList.remove('show');
         }
     };
+
+        // --- Inisialisasi Aplikasi ---
+    const initializeApp = async () => {
+        await loadConfig();
+        if (typeof window.ethereum !== 'undefined') {
+            provider = new ethers.providers.Web3Provider(window.ethereum);
+            signer = provider.getSigner();
+        } else {
+            preloader.classList.remove('show');
+            return;
+        }
+        await fetchDashboardData();
+    };
+
+    initializeApp();
 
     // Panggil fungsi untuk mengambil data saat halaman dimuat
     fetchDashboardData();

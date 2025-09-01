@@ -1,11 +1,9 @@
 {
   "langitStaking": {
     "name": "LangitStaking",
-    "address": "0x290356c2206e71f4cfb939f77c7b58b4a7175900",
-    "abi": [
-      {
-        "inputs": [
-          {
+    "address": "0xF970F532AB613a9F710dc7e74C2584D774796216",
+    "abi": [{
+        "inputs": [{
             "internalType": "address",
             "name": "_langitTokenAddress",
             "type": "address"
@@ -25,8 +23,53 @@
         "type": "constructor"
       },
       {
-        "inputs": [
-          {
+        "inputs": [{
+          "internalType": "bytes32",
+          "name": "_stakeId",
+          "type": "bytes32"
+        }],
+        "name": "getStakeInfo",
+        "outputs": [{
+          "components": [{
+              "internalType": "address",
+              "name": "staker",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "stakeTimestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "vestingStart",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "releasedAmount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum LangitStaking.Status",
+              "name": "status",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct LangitStaking.Stake",
+          "name": "",
+          "type": "tuple"
+        }],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [{
             "internalType": "bytes32",
             "name": "_stakeId",
             "type": "bytes32"
@@ -48,21 +91,18 @@
         "type": "function"
       },
       {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "_stakeId",
-            "type": "bytes32"
-          }
-        ],
+        "inputs": [{
+          "internalType": "bytes32",
+          "name": "_stakeId",
+          "type": "bytes32"
+        }],
         "name": "claimVestedTokens",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
       },
       {
-        "inputs": [
-          {
+        "inputs": [{
             "internalType": "bytes32",
             "name": "_stakeId",
             "type": "bytes32"
@@ -79,13 +119,11 @@
         "type": "function"
       },
       {
-        "inputs": [
-          {
-            "internalType": "bytes32",
-            "name": "_stakeId",
-            "type": "bytes32"
-          }
-        ],
+        "inputs": [{
+          "internalType": "bytes32",
+          "name": "_stakeId",
+          "type": "bytes32"
+        }],
         "name": "unstake",
         "outputs": [],
         "stateMutability": "nonpayable",
@@ -94,13 +132,11 @@
       {
         "inputs": [],
         "name": "getContractBalance",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
+        "outputs": [{
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
       }
@@ -109,15 +145,12 @@
   "langitBurnVault": {
     "name": "LangitBurnVault",
     "address": "0x5fb06832dc03e072408da7fcc1979de2f35843b8",
-    "abi": [
-      {
-        "inputs": [
-          {
-            "internalType": "uint256",
-            "name": "_amount",
-            "type": "uint256"
-          }
-        ],
+    "abi": [{
+        "inputs": [{
+          "internalType": "uint256",
+          "name": "_amount",
+          "type": "uint256"
+        }],
         "name": "withdrawBurnedTokens",
         "outputs": [],
         "stateMutability": "nonpayable",
@@ -126,13 +159,11 @@
       {
         "inputs": [],
         "name": "totalBurned",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
+        "outputs": [{
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
       }
@@ -141,10 +172,8 @@
   "langitToken": {
     "name": "LANGIT",
     "address": "0xeE145Ab8589c0D5B694926e75a11fb2F7d191acD",
-    "abi": [
-      {
-        "inputs": [
-          {
+    "abi": [{
+        "inputs": [{
             "internalType": "address",
             "name": "owner",
             "type": "address"
@@ -156,19 +185,16 @@
           }
         ],
         "name": "allowance",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
+        "outputs": [{
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
       },
       {
-        "inputs": [
-          {
+        "inputs": [{
             "internalType": "address",
             "name": "spender",
             "type": "address"
@@ -180,49 +206,40 @@
           }
         ],
         "name": "approve",
-        "outputs": [
-          {
-            "internalType": "bool",
-            "name": "",
-            "type": "bool"
-          }
-        ],
+        "outputs": [{
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }],
         "stateMutability": "nonpayable",
         "type": "function"
       },
       {
-        "inputs": [
-          {
-            "internalType": "address",
-            "name": "account",
-            "type": "address"
-          }
-        ],
+        "inputs": [{
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }],
         "name": "balanceOf",
-        "outputs": [
-          {
-            "internalType": "uint256",
-            "name": "",
-            "type": "uint256"
-          }
-        ],
+        "outputs": [{
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }],
         "stateMutability": "view",
         "type": "function"
       },
       {
         "inputs": [],
         "name": "decimals",
-        "outputs": [
-          {
-            "internalType": "uint8",
-            "name": "",
-            "type": "uint8"
-          }
-        ],
+        "outputs": [{
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }],
         "stateMutability": "view",
         "type": "function"
       }
     ]
   }
 }
-
