@@ -80,7 +80,7 @@
                 <div class="summary-card">
                     <h2 class="section-title">Your Earnings Breakdown</h2>
                     <div class="summary-item d-flex justify-content-between align-items-center">
-                        <span class="item-label">Staking ROI</span>
+                        <span class="item-label">Reward Stacking</span>
                         <!-- PENAMBAHAN ID -->
                         <span id="stakingRoi" class="item-value">$ 0.00</span>
                     </div>

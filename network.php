@@ -47,13 +47,13 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="stat-card text-center">
-                            <div class="stat-title">Direct Downlines</div>
+                            <div class="stat-title">Direct</div>
                             <div id="directDownlinesCount" class="stat-value">0</div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="stat-card text-center">
-                            <div class="stat-title">Total Team Members</div>
+                            <div class="stat-title">Total Groups</div>
                             <div id="totalTeamMembers" class="stat-value">0</div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
 
             <!-- Direct Downlines List -->
             <section id="downlineListContainer" class="downline-list">
-                <h2 class="section-title">Direct Downlines</h2>
+                <h2 class="section-title">Direct</h2>
                 <div id="downlineList">
                     <!-- Konten dinamis akan dimuat di sini -->
                 </div>
