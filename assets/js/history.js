@@ -45,7 +45,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // Mengganti underscore dengan spasi dan membuat huruf kapital
-        const formattedType = tx.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        var formattedType = tx.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+
+        if (formattedType === "Staking Roi In"){
+            formattedType = "Staking Reward In";
+        } else if (formattedType === "Matching Bonus In") {
+            formattedType = "Matching Reward In";
+        } else if (formattedType === "Royalty Bonus In") {
+            formattedType = "Royalty Reward In";
+        }
 
         return `
             <div class="transaction-item">

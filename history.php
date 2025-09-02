@@ -60,7 +60,7 @@
 
     <!-- Panggil file JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/history.js"></script>
+    <script src="assets/js/history.js?v=<?php echo filemtime('assets/js/history.js'); ?>"></script>
     <script src="assets/js/nav_handler.js?v=<?php echo filemtime('assets/js/nav_handler.js'); ?>"></script>
 
 </body>
