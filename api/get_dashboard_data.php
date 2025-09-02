@@ -52,7 +52,13 @@ try {
 
     // 5. Hitung Omset Jaringan (ini adalah fungsi yang kompleks, kita buat placeholder dulu)
     // NOTE: Logika ini akan kita implementasikan secara detail nanti
-    $networkTurnover = 0.00; // Placeholder
+    // $networkTurnover = 0.00; // Placeholder
+
+    $networkStats = $userTable->getNetworkStats($userId);
+    $networkTurnover = 0;
+    if (!empty($networkStats['all_member_ids'])) {
+        $networkTurnover = $stakeTable->getTotalStakesForUserList($networkStats['all_member_ids']);
+    }
 
     // 6. Hitung Siklus Profit Staking
     $totalWithdrawn = $stakeTable->getUserTotalWithdrawnUSDT($userId);

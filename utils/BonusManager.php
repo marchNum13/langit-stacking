@@ -162,15 +162,23 @@ class BonusManager
         $lastGrade = null;
         $matchingStoppedAtH = false;
         $royaltyRecipients = [];
+        $matchingRateNow = 0;
 
         // Loop ke atas dalam hierarki
         while ($currentUplineWallet !== null) {
             $uplineUser = $this->userTable->getUserByWalletAddress($currentUplineWallet);
-            if (!$uplineUser || empty($uplineUser['grade'])) {
+            if (!$uplineUser) {
                 break; // Berhenti jika upline tidak ada atau tidak punya grade
             }
-            
+
             $currentGrade = $uplineUser['grade'];
+
+            if($uplineUser['grade'] === null){
+                // Siapkan untuk iterasi berikutnya
+                // $lastGrade = $currentGrade;
+                $currentUplineWallet = $uplineUser['upline_wallet'];
+                continue;
+            }
 
             // --- Logika Matching Bonus ---
             if (!$matchingStoppedAtH) {
@@ -178,7 +186,7 @@ class BonusManager
                 if ($currentGrade === $lastGrade) {
                     $matchingStoppedAtH = true; // Berhenti total
                 } else {
-                    $matchingRate = self::MATCHING_BONUS_RATES[$currentGrade] ?? 0;
+                    $matchingRate = self::MATCHING_BONUS_RATES[$currentGrade] - $matchingRateNow ?? 0;
                     $matchingAmount = $roiAmount * $matchingRate;
 
                     $this->balanceTable->addBonus($uplineUser['id'], $matchingAmount, 'matching_bonus');
@@ -201,6 +209,7 @@ class BonusManager
 
             // Siapkan untuk iterasi berikutnya
             $lastGrade = $currentGrade;
+            $matchingRateNow = self::MATCHING_BONUS_RATES[$currentGrade];
             $currentUplineWallet = $uplineUser['upline_wallet'];
         }
 
