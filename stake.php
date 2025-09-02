@@ -146,7 +146,8 @@
     
     <!-- Custom JS -->
     <script src="assets/js/nav_handler.js"></script>
-    <script src="assets/js/stake_handler.js"></script>
+    <script src="assets/js/stake_handler.js?v=<?php echo filemtime('assets/js/stake_handler.js'); ?>"></script>
+    <!-- <script src="assets/js/stake_handler.js"></script> -->
 
 </body>
 </html>
