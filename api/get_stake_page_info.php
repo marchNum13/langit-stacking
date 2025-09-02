@@ -61,11 +61,11 @@ try {
             'stake_id_onchain' => $stakeDetails['stake_id_onchain'],
             'plan' => ucwords(str_replace('_', ' ', $stakeDetails['plan'])),
             'amount_langit' => number_format((float)$stakeDetails['amount_langit'], 2, '.', ','),
-            'amount_usdt_initial' => number_format((float)$stakeDetails['amount_usdt_initial'], 2, '.', ','),
+            'amount_usdt_initial' => number_format((float)$stakeDetails['amount_usdt_initial'], 4, '.', ','),
             'start_date' => date("M d, Y", strtotime($stakeDetails['created_at'])),
             'expires_at' => $stakeDetails['expires_at'] ? date("M d, Y", strtotime($stakeDetails['expires_at'])) : null,
             'profit_cycle' => [
-                'achieved' => number_format((float)$stakeDetails['total_withdrawn_usdt'], 2, '.', ','),
+                'achieved' => number_format((float)$stakeDetails['total_withdrawn_usdt'], 4, '.', ','),
                 'max' => number_format((float)$stakeDetails['max_profit_usdt'], 2, '.', ','),
                 'percentage' => round($profitCyclePercentage)
             ]

@@ -163,9 +163,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const amount = parseFloat(stakeAmountInput.value) || 0;
         const usdtValue = amount * langitPrice;
 
-        usdtValueEl.textContent = `≈ $ ${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
+        usdtValueEl.textContent = `≈ $ ${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`;
         summaryAmountLangit.textContent = `${amount.toLocaleString()} LANGIT`;
-        summaryAmountUsdt.textContent = `~ $${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} USDT`;
+        summaryAmountUsdt.textContent = `~ $${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`;
         summaryPlan.textContent = selectedPlan.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
         stakeBtn.disabled = usdtValue < 10;
