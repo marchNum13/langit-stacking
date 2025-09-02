@@ -168,7 +168,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         summaryAmountUsdt.textContent = `~ $${usdtValue.toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })} USDT`;
         summaryPlan.textContent = selectedPlan.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
-        stakeBtn.disabled = usdtValue < 10;
+        // Logika validasi tombol stake yang baru
+        let minStake = 10;
+        if (selectedPlan === '6_months' || selectedPlan === '12_months') {
+            minStake = 50;
+        }
+
+        stakeBtn.disabled = usdtValue < minStake;
     };
     
     // --- Proses Staking & Unstaking ---
