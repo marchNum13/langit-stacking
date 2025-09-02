@@ -80,17 +80,17 @@
                 <div class="summary-card">
                     <h2 class="section-title">Your Earnings Breakdown</h2>
                     <div class="summary-item d-flex justify-content-between align-items-center">
-                        <span class="item-label">Reward Stacking</span>
+                        <span class="item-label">Staking Reward</span>
                         <!-- PENAMBAHAN ID -->
                         <span id="stakingRoi" class="item-value">$ 0.00</span>
                     </div>
                     <div class="summary-item d-flex justify-content-between align-items-center">
-                        <span class="item-label">Matching Bonus</span>
+                        <span class="item-label">Matching Reward</span>
                         <!-- PENAMBAHAN ID -->
                         <span id="matchingBonus" class="item-value">$ 0.00</span>
                     </div>
                     <div class="summary-item d-flex justify-content-between align-items-center">
-                        <span class="item-label">Royalty Bonus</span>
+                        <span class="item-label">Royalty Reward</span>
                         <!-- PENAMBAHAN ID -->
                         <span id="royaltyBonus" class="item-value">$ 0.00</span>
                     </div>
