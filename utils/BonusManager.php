@@ -96,10 +96,18 @@ class BonusManager
     }
 
     /**
-     * Memproses bonus untuk satu staking.
+     * REVISI: Memproses bonus untuk satu staking, termasuk pengecekan kedaluwarsa.
      */
     private function processSingleStake(array $stake, float $totalPlatformStake): void
     {
+        // PENGECEKAN BARU: Cek apakah stake berjangka sudah kedaluwarsa
+        if ($this->checkAndHandleExpiry($stake)) {
+            // Jika sudah kedaluwarsa, statusnya diubah menjadi 'expired' dan tidak menerima bonus lagi.
+            // totalPlatformStake diperbarui agar perhitungan royalti tetap akurat.
+            $totalPlatformStake -= (float)$stake['amount_usdt_initial'];
+            return; // Hentikan proses untuk stake ini
+        }
+
         $staker = $this->userTable->getUserById($stake['user_id']);
         if (!$staker) return;
 
@@ -118,6 +126,28 @@ class BonusManager
         // B. Proses bonus untuk para upline
         $this->processUplineBonuses($staker, $hourlyRoiAmount, $totalPlatformStake);
     }
+    
+    /**
+     * FUNGSI BARU: Memeriksa dan menangani jika stake berjangka telah kedaluwarsa.
+     * @return bool True jika stake kedaluwarsa dan statusnya diubah, false jika tidak.
+     */
+    private function checkAndHandleExpiry(array $stake): bool
+    {
+        // Hanya cek untuk plan berjangka yang memiliki tanggal kedaluwarsa
+        if ($stake['plan'] !== 'flexible' && !empty($stake['expires_at'])) {
+            $now = new DateTime();
+            $expiryDate = new DateTime($stake['expires_at']);
+
+            if ($now >= $expiryDate) {
+                // Stake sudah kedaluwarsa, ubah statusnya
+                $this->stakeTable->updateStakeStatus($stake['stake_id_onchain'], 'expired');
+                echo "Stake ID {$stake['id']} telah kedaluwarsa. Status diubah menjadi 'expired'.\n";
+                return true; // Menandakan stake sudah tidak aktif lagi
+            }
+        }
+        return false; // Stake masih aktif
+    }
+
 
     /**
      * Memproses Matching dan Royalty Bonus untuk hierarki upline.
@@ -177,13 +207,15 @@ class BonusManager
         // --- Distribusi Royalty Bonus ---
         if (!empty($royaltyRecipients)) {
             $hourlyRoyaltyPool = ($totalPlatformStake * self::ROYALTY_RATE) / 24;
-            $sharePerRecipient = $hourlyRoyaltyPool / count($royaltyRecipients);
+            $sharePerRecipient = count($royaltyRecipients) > 0 ? $hourlyRoyaltyPool / count($royaltyRecipients) : 0;
 
-            foreach ($royaltyRecipients as $recipientId) {
-                $this->balanceTable->addBonus($recipientId, $sharePerRecipient, 'royalty_bonus');
-                $this->transactionTable->createTransaction([
-                    'user_id' => $recipientId, 'type' => 'royalty_bonus_in', 'amount_usdt' => $sharePerRecipient
-                ]);
+            if($sharePerRecipient > 0) {
+                foreach ($royaltyRecipients as $recipientId) {
+                    $this->balanceTable->addBonus($recipientId, $sharePerRecipient, 'royalty_bonus');
+                    $this->transactionTable->createTransaction([
+                        'user_id' => $recipientId, 'type' => 'royalty_bonus_in', 'amount_usdt' => $sharePerRecipient
+                    ]);
+                }
             }
         }
     }
@@ -193,6 +225,9 @@ class BonusManager
      */
     private function generateRandomFloat(float $min, float $max, int $precision = 4): float
     {
+        if ($min > $max) {
+            return $max;
+        }
         return round($min + mt_rand() / mt_getrandmax() * ($max - $min), $precision);
     }
 }
