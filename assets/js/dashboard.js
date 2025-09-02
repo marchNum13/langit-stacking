@@ -59,16 +59,32 @@ document.addEventListener('DOMContentLoaded', () => {
         progressBar.style.width = `${data.profit_cycle.percentage}%`;
     };
 
-    const createVestingItemHTML = (stake) => {
-        const totalAmount = parseFloat(stake.amount_langit).toLocaleString('en-US', {maximumFractionDigits: 2});
+    // REVISI: Menambahkan parameter releasedAmount untuk ditampilkan
+    const createVestingItemHTML = (stake, releasedAmount) => {
+        const totalAmount = parseFloat(stake.amount_langit);
+        const releasedFormatted = parseFloat(ethers.utils.formatUnits(releasedAmount, 18)).toLocaleString('en-US', {maximumFractionDigits: 2});
+        const totalFormatted = totalAmount.toLocaleString('en-US', {maximumFractionDigits: 2});
+        
+        const progressPercentage = totalAmount > 0 ? (ethers.utils.formatUnits(releasedAmount, 18) / totalAmount) * 100 : 0;
+
         return `
             <div class="summary-card vesting-card mb-3">
                 <h2 class="section-title">Vesting Claim Available</h2>
                 <div class="summary-item d-flex justify-content-between align-items-center">
-                    <span class="item-label">Total Unstaked Principal</span>
-                    <span class="item-value">${totalAmount} LANGIT</span>
+                    <span class="item-label">Unstaked Principal</span>
+                    <span class="item-value">${totalFormatted} LANGIT</span>
                 </div>
-                <div class="d-grid gap-2">
+                <!-- PENAMBAHAN BARU: Menampilkan progress vesting -->
+                <div class="summary-item">
+                     <div class="d-flex justify-content-between align-items-center mb-2 text-secondary small">
+                        <span>Claimed: ${releasedFormatted}</span>
+                        <span>Total: ${totalFormatted}</span>
+                    </div>
+                    <div class="progress-bar-custom">
+                        <div class="progress-fill" style="width: ${progressPercentage}%;"></div>
+                    </div>
+                </div>
+                <div class="d-grid gap-2 mt-3">
                     <button class="btn cta-button claim-vesting-btn" data-stake-id="${stake.stake_id_onchain}">
                         Claim Vested Tokens
                     </button>
@@ -77,15 +93,24 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     };
 
+    // REVISI: Mengambil data on-chain sebelum menampilkan
     const fetchAndDisplayVestingClaims = async () => {
         try {
             const response = await fetch('api/get_vesting_info.php');
             const result = await response.json();
+
             if (result.status === 'success' && result.data.length > 0) {
-                vestingClaimsContainer.innerHTML = '';
-                result.data.forEach(stake => {
-                    vestingClaimsContainer.innerHTML += createVestingItemHTML(stake);
-                });
+                if (!contracts.staking) {
+                    contracts.staking = new ethers.Contract(blockchainConfig.langitStaking.address, blockchainConfig.langitStaking.abi, signer);
+                }
+                
+                vestingClaimsContainer.innerHTML = ''; // Kosongkan kontainer
+                
+                // Loop melalui setiap stake dan ambil data on-chain
+                for (const stake of result.data) {
+                    const stakeInfo = await contracts.staking.getStakeInfo(stake.stake_id_onchain);
+                    vestingClaimsContainer.innerHTML += createVestingItemHTML(stake, stakeInfo.releasedAmount);
+                }
             }
         } catch (error) {
             console.error("Failed to fetch vesting claims:", error);
@@ -167,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.status === 'success') {
                 updateDashboardUI(result.data);
-                await fetchAndDisplayVestingClaims();
             } else {
                 // Jika error karena tidak terautentikasi, redirect ke halaman login
                 if (result.message.includes('authenticated')) {
@@ -203,5 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Panggil fungsi untuk mengambil data saat halaman dimuat
     fetchDashboardData();
+    fetchAndDisplayVestingClaims();
 });
 
