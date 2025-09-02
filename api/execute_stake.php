@@ -102,10 +102,11 @@ try {
         'tx_hash' => $data['tx_hash']
     ];
     $transactionTable->createTransaction($transactionData);
+    $gradeManager = new GradeManager($userTable, $stakeTable);
+    $gradeManager->checkAndUpgradeSingleUser($user);
     
     // 8. REVISI: Implementasikan pemicu untuk pengecekan grade upline
     if (isset($user['upline_wallet']) && !empty($user['upline_wallet'])) {
-        $gradeManager = new GradeManager($userTable, $stakeTable);
         $gradeManager->checkAndUpgradeUplines($user['upline_wallet']);
     }
 

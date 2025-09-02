@@ -58,7 +58,7 @@ class GradeManager
      *
      * @param array $user Data pengguna yang akan diperiksa.
      */
-    private function checkAndUpgradeSingleUser(array $user): void
+    public function checkAndUpgradeSingleUser(array $user): void
     {
         $userId = $user['id'];
         $userWallet = $user['wallet_address'];
