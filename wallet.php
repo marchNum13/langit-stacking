@@ -80,7 +80,7 @@
 
     <!-- Custom JS -->
     <script src="assets/js/nav_handler.js"></script>
-    <script src="assets/js/wallet_handler.js"></script>
+    <script src="assets/js/wallet_handler.js?v=<?php echo filemtime('assets/js/wallet_handler.js'); ?>"></script>
 
 </body>
 </html>

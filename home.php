@@ -140,7 +140,7 @@
 
     <!-- Panggil file JS kustom kita -->
     <script src="assets/js/nav_handler.js"></script>
-    <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/dashboard.js?v=<?php echo filemtime('assets/js/dashboard.js'); ?>"></script>
 
 </body>
 </html>
