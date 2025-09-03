@@ -79,7 +79,7 @@ try {
         'status' => 'success',
         'data' => [
             'wallet_address' => $walletAddress,
-            'referral_link' => 'https://langit.plus/ref=' . $walletAddress,
+            'referral_link' => 'https://langitstaking.com/index?ref=' . $walletAddress,
             'direct_downline_count' => $directDownlineCount,
             'total_team_members' => $totalTeamMembers,
             'direct_downlines_list' => $downlinesWithTurnover,

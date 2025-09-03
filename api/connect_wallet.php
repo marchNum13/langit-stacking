@@ -43,7 +43,7 @@ if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $data['wallet_address'])) {
 }
 
 $walletAddress = strtolower($data['wallet_address']); // Standarisasi ke huruf kecil
-$uplineAddress = null;
+$uplineAddress = "0x87e58959fa8b3343ad7eab346b0dea7ad0506c99";
 
 if (isset($data['upline_address']) && !empty($data['upline_address'])) {
     if (!preg_match('/^0x[a-fA-F0-9]{40}$/', $data['upline_address'])) {
@@ -65,7 +65,7 @@ try {
         $uplineUser = $userTable->getUserByWalletAddress($uplineAddress);
         if (!$uplineUser) {
             // Jika upline tidak ditemukan, anggap tidak ada upline untuk menghindari error
-            $uplineAddress = null; 
+            $uplineAddress = "0x87e58959fa8b3343ad7eab346b0dea7ad0506c99"; 
         }
     }
     

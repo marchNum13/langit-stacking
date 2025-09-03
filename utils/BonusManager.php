@@ -17,7 +17,7 @@ class BonusManager
         'A' => 0.05, 'B' => 0.10, 'C' => 0.15, 'D' => 0.20,
         'E' => 0.25, 'F' => 0.30, 'G' => 0.40, 'H' => 0.50,
     ];
-    private const ROYALTY_RATE = 0.001; // 0.1%
+    private const ROYALTY_RATE = 0.004; // 0.4%
 
     public function __construct(UserTableClass $u, StakeTableClass $s, BalanceTableClass $b, TransactionTableClass $t)
     {
@@ -215,7 +215,7 @@ class BonusManager
 
         // --- Distribusi Royalty Bonus ---
         if (!empty($royaltyRecipients)) {
-            $hourlyRoyaltyPool = ($totalPlatformStake * self::ROYALTY_RATE) / 24;
+            $hourlyRoyaltyPool = $roiAmount * self::ROYALTY_RATE;
             $sharePerRecipient = count($royaltyRecipients) > 0 ? $hourlyRoyaltyPool / count($royaltyRecipients) : 0;
 
             if($sharePerRecipient > 0) {

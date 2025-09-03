@@ -9,9 +9,9 @@ class connMySQL
 {
     // --- Database Credentials ---
     private $servername = "localhost"; // SERVER NAME
-    private $username = "root";       // USERNAME
-    private $password = "";           // PASSWORD
-    private $dbname = 'langit_stacking_db';
+    private $username = "u627446752_db_staking";       // USERNAME
+    private $password = "HsnP52s1&g";           // PASSWORD
+    private $dbname = 'u627446752_db_staking';
     
     // Store the connection object to allow reuse within a single request, if desired.
     // However, for the pattern used in the child classes (getting a new connection for each method),
