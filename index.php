@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Langit Stacking+</title>
+    <title>Langit Staking+</title>
 
     <?php include "seo.php" ?>
     
@@ -32,7 +32,7 @@
     <div class="main-container">
         <div class="content-card">
             <img src="assets/images/logo-langit.png" alt="Langit Stacking+ Logo" class="logo-img">
-            <h1 class="welcome-title">Langit Stacking+</h1>
+            <h1 class="welcome-title">Langit Staking+</h1>
             <p class="short-description">A hybrid staking platform with active and passive earnings.</p>
             <button id="connectWalletBtn" class="btn connect-wallet-btn">
                 <i class="fas fa-wallet btn-icon"></i>
