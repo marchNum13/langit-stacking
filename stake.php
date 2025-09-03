@@ -51,15 +51,15 @@
                     <label class="form-label-custom">Select Contract Plan</label>
                     <button class="btn plan-btn active" data-plan="flexible">
                         <div class="plan-title">Flexible</div>
-                        <div class="plan-roi">Daily ROI: 0.3% - 1.5%</div>
+                        <div class="plan-roi">Daily Reward: 0.3% - 1.5%</div>
                     </button>
                     <button class="btn plan-btn" data-plan="6_months">
                         <div class="plan-title">6 Months</div>
-                        <div class="plan-roi">Daily ROI: 0.4% - 1.5%</div>
+                        <div class="plan-roi">Daily Reward: 0.4% - 1.5%</div>
                     </button>
                     <button class="btn plan-btn" data-plan="12_months">
                         <div class="plan-title">12 Months</div>
-                        <div class="plan-roi">Daily ROI: 0.5% - 1.5%</div>
+                        <div class="plan-roi">Daily Reward: 0.5% - 1.5%</div>
                     </button>
                 </section>
 

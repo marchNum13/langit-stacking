@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="downline-item">
                 <div>
                     <div class="wallet-address">${formatWalletAddress(downline.wallet_address)}</div>
-                    <div class="turnover-label">Total Turnover</div>
+                    <div class="turnover-label">Total Staking</div>
                 </div>
                 <div class="text-end">
                     <div class="turnover-amount">$ ${downline.turnover}</div>
