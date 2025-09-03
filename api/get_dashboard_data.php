@@ -61,7 +61,7 @@ try {
     }
 
     // 6. Hitung Siklus Profit Staking
-    $totalWithdrawn = $stakeTable->getUserTotalWithdrawnUSDT($userId);
+    $totalWithdrawn = $stakeTable->getUserStakesByStatus($userId, 'active')[0]['total_withdrawn_usdt'];
     $totalStakeValue = $totalActiveStake;
 
     $profitCycleMax = $totalStakeValue > 0 ? $totalStakeValue * 5 : 0;
