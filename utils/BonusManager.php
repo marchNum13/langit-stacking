@@ -17,7 +17,7 @@ class BonusManager
         'A' => 0.05, 'B' => 0.10, 'C' => 0.15, 'D' => 0.20,
         'E' => 0.25, 'F' => 0.30, 'G' => 0.40, 'H' => 0.50,
     ];
-    private const ROYALTY_RATE = 0.004; // 0.4%
+    private const ROYALTY_RATE = 0.04; // 4%
 
     public function __construct(UserTableClass $u, StakeTableClass $s, BalanceTableClass $b, TransactionTableClass $t)
     {
